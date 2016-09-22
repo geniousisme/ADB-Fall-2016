@@ -1,7 +1,7 @@
-import urllib2
 import base64
-import pprint
 import json
+import pprint
+import urllib2
 
 class BingSearchEngine(object):
 	def __init__(self):
