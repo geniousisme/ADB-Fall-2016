@@ -13,7 +13,7 @@ class BingSearchEngine(object):
 		content = json.load(response)
 		return content["d"]["results"]
 
-	def search(self, query, top, format='json'):
+	def search(self, query, top=10, format='json'):
 		bing_url = self.bing_base_url + '%27' + query + '%27&$top=' + str(top) \
 			+ '&$format=' + format
 		account_key_enccode = 												   \
@@ -27,5 +27,6 @@ class BingSearchEngine(object):
 
 if __name__ == "__main__":
 	bse = BingSearchEngine()
-	pprint.pprint(bse.search("musk", 10), indent=2)
+	results = bse.search("musk")
+	pprint.pprint(results, indent=2)
 

@@ -27,7 +27,7 @@ class MainFunction(object):
             if len(commands) >= 2:
                 query = commands[1]
                 if len(commands) == 3:
-                    target_precision = int(commands[2])
+                    target_precision = float(commands[2])
             if  target_precision < 0 or target_precision > 1:
                 raise WrongRangePrecisionError
         except ValueError:
@@ -39,10 +39,52 @@ class MainFunction(object):
         else:
             return query, target_precision
 
+    def is_relevant(self, yes_or_no_relevant_str):
+        if yes_or_no_relevant_str.lower() == 'y':
+            return True
+        if yes_or_no_relevant_str.lower() == 'n':
+            return False
+        else:
+            print "Cannot recognise the answer, count as not relevant."
+            return False
+
+    def current_summary(self, curr_precision, target_precision):
+        print "\n\n\n======== Current Summary ========"
+        print "Target Precision Value:", target_precision
+        print "Current Precision Value:", curr_precision
+
     def query_loop(self):
+        curr_precision = 0
         query, target_precision = self.arg_parser(sys.argv)
-        print "query", query
-        print "precision", target_precision
+        relevant_results = []
+        relevance = 0
+        while True:
+            search_results = self.bse.search(query)
+            for idx, result in enumerate(search_results):
+                print "--------------------------------"
+                print "Result " + str(idx + 1) + ": "
+                print "Title:", result['Title']
+                print "Url:", result['Url']
+                print "Description:", result['Description']
+                yes_or_no_relevant_str = raw_input("Is this result relevant? (Y/N) ")
+                if self.is_relevant(yes_or_no_relevant_str):
+                    relevant_results.append(result)
+                    relevance += 1
+            curr_precision = float(relevance) / 10
+            self.current_summary(curr_precision, target_precision)
+            if curr_precision >= target_precision:
+                print "Reach the target precision value, yeah!"
+                return 
+            if curr_precision == 0:
+                print "So sad, no matching result, stop."
+                return
+            if curr_precision == 1:
+                print "100% relevant!! Yeah!"
+                return
+            else:
+                print "Current precision is still lower than target precision value, continue"
+                continue
+
 
 if __name__ == "__main__":
     main = MainFunction()
