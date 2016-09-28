@@ -4,7 +4,6 @@ import sys
 
 from BingSearchEngine import BingSearchEngine
 from DocumentEnum import TITLE, URL, DESC
-from NLPLibrary import NLPLibrary
 from QueryExpansion import QueryExpansion
 
 
@@ -16,7 +15,6 @@ class MainFunction(object):
     def __init__(self):
         self.bse = BingSearchEngine()
         self.qe = QueryExpansion()
-        self.nlp = NLPLibrary()
 
     def helper(self):
         print "python main.py <query> <target precision>"
@@ -94,17 +92,16 @@ class MainFunction(object):
                 else:
                     print "Current precision is still lower than "             \
                         "target precision value, continue"
-                    query = self.qe.generate_new_query(
-                        query, relevant_results, non_relecant_results
+                    query = self.qe.get_new_query(
+                        query, relevant_results, non_relecant_results, search_results
                     )
                     print search_results
-                    print self.nlp.compute_weight_vector(search_results)
                     print "new query:", query
                     continue
         except KeyboardInterrupt:
-            print "\n==================================="
+            print "\n====================================="
             print "Leaving Query Expansion Program...."
-            print "==================================="
+            print "====================================="
             sys.exit(1)
 
 if __name__ == "__main__":

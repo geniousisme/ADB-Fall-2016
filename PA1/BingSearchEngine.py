@@ -14,6 +14,7 @@ class BingSearchEngine(object):
 		return content["d"]["results"]
 
 	def search(self, query, top=10, format='json'):
+		query = query.replace(' ', "%20")
 		bing_url = self.bing_base_url + '%27' + query + '%27&$top=' + str(top) \
 			+ '&$format=' + format
 		account_key_enccode = 												   \
