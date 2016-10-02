@@ -1,4 +1,4 @@
-class Compute(object):
+class VectorCompute(object):
     def __init__(self):
         pass
 

@@ -5,11 +5,7 @@ import sys
 from BingSearchEngine import BingSearchEngine
 from DocumentEnum import TITLE, URL, DESC
 from QueryExpansion import QueryExpansion
-
-
-
-class WrongRangePrecisionError(Exception):
-    pass
+from Utils import WrongRangePrecisionError
 
 class MainFunction(object):
     def __init__(self):
@@ -52,27 +48,28 @@ class MainFunction(object):
             return False
 
     def current_summary(self, curr_precision, target_precision):
-        print "\n\n\n======== Current Summary ========"
+        print "\n\n\n"
+        print "======== Current Summary ========"
         print "Target Precision Value:", target_precision
         print "Current Precision Value:", curr_precision
 
     def query_loop(self):
-        curr_precision = 0
         query, target_precision = self.arg_parser(sys.argv)
-        relevant_results = []
-        non_relecant_results = []
-        relevance = 0
         try:
             while True:
+                relevant_results = []
+                non_relecant_results = []
+                curr_precision = relevance = 0
                 search_results = self.bse.search(query)
                 for idx, result in enumerate(search_results):
                     print "--------------------------------"
                     print "Result " + str(idx + 1) + ": "
-                    print "Title:", result[TITLE]
-                    print "Url:", result[URL]
-                    print "Description:", result[DESC]
-                    yes_or_no_relevant_str =                                   \
-                        raw_input("===> Is this result relevant? (Y/N) ")
+                    print "\tTitle:", result[TITLE]
+                    print "\tUrl:", result[URL]
+                    print "\tDescription:", result[DESC]
+                    yes_or_no_relevant_str = raw_input(
+                        "===> Is this result relevant? (Y/N) "
+                    )
                     if self.is_relevant(yes_or_no_relevant_str):
                         relevant_results.append(result)
                         relevance += 1
@@ -90,18 +87,19 @@ class MainFunction(object):
                     print "100% relevant!! Yeah!"
                     return
                 else:
-                    print "Current precision is still lower than "             \
-                        "target precision value, continue"
+                    print "Current precision is still lower than target precision value, continue..."
                     query = self.qe.get_new_query(
                         query, relevant_results, non_relecant_results, search_results
                     )
-                    print search_results
+                    
                     print "new query:", query
                     continue
         except KeyboardInterrupt:
-            print "\n====================================="
-            print "Leaving Query Expansion Program...."
-            print "====================================="
+            print "\n\n\n"
+            print "+------------------------------------+"
+            print "| Leaving Query Expansion Program....|"
+            print "+------------------------------------+"
+            print "Bye ~"
             sys.exit(1)
 
 if __name__ == "__main__":
