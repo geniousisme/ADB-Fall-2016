@@ -11,7 +11,7 @@ class QueryExpansion(object):
     def __init__(self):
         self.vect_com = VectorCompute()
         self.all_word_stats = {}
-        self.all_words_vector = []
+        self.all_words_vector = set()
         self.idf_vector = []
         self.alpha = 1.0
         self.beta = 0.75
@@ -40,7 +40,6 @@ class QueryExpansion(object):
         item_stats = {}
         items = self.split_input_doc_to_words(item_str)
         for item in items:
-            item = item.lower()
             if item_stats.get(item):
                 item_stats[item] += 1.0
             else:
@@ -66,7 +65,7 @@ class QueryExpansion(object):
 
     def initialize_query_expansion(self):
         self.all_word_stats = {}
-        self.all_words_vector = []
+        self.all_words_vector = set()
         self.idf_vector = []
 
     def build_input_doc(self, res_json):
@@ -95,11 +94,8 @@ class QueryExpansion(object):
             words = self.split_input_doc_to_words(input_doc)
             for word in words:
                 #TODO::Some non word issue, ex.\u0252 for musk case
-                if self.all_word_stats.get(word):
-                    self.all_word_stats[word] += 1.0
-                else:
-                    self.all_word_stats[word] = 1.0
-        self.all_words_vector = self.all_word_stats.keys()
+                self.all_words_vector.add(word)
+        self.all_words_vector = list(self.all_words_vector)
         self.idf_vector = self.compute_idf_vector(all_res_jsons)
 
     def compute_tf_vector(self, input_doc):
@@ -209,6 +205,7 @@ class QueryExpansion(object):
         )
         for idx, word in enumerate(self.all_words_vector):
             word_weight_dict[word] = weight_vector[idx]
+        print word_weight_dict
         self.all_words_vector = sorted(
             self.all_words_vector, key=word_weight_dict.get, reverse=True
         )
