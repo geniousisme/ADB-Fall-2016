@@ -1,17 +1,16 @@
-
-
 import urllib2
 import base64
-from BingSearchEngine import BingSearchEngine
 import sys
 
-class WrongRangePrecisionError(Exception):
-    pass
-
+from BingSearchEngine import BingSearchEngine
+from DocumentEnum import TITLE, URL, DESC
+from QueryExpansion import QueryExpansion
+from Utils import WrongRangePrecisionError
 
 class MainFunction(object):
     def __init__(self):
         self.bse = BingSearchEngine()
+        self.qe = QueryExpansion()
 
     def helper(self):
         print "python main.py <query> <target precision>"
@@ -40,51 +39,70 @@ class MainFunction(object):
             return query, target_precision
 
     def is_relevant(self, yes_or_no_relevant_str):
-        if yes_or_no_relevant_str.lower() == 'y':
+        yes_or_no_relevant_str = yes_or_no_relevant_str.lower()
+        if yes_or_no_relevant_str == 'y':
             return True
-        if yes_or_no_relevant_str.lower() == 'n':
+        elif yes_or_no_relevant_str == 'n':
             return False
         else:
             print "Cannot recognise the answer, count as not relevant."
             return False
 
     def current_summary(self, curr_precision, target_precision):
-        print "\n\n\n======== Current Summary ========"
+        print "\n\n\n"
+        print "======== Current Summary ========"
         print "Target Precision Value:", target_precision
         print "Current Precision Value:", curr_precision
 
     def query_loop(self):
-        curr_precision = 0
         query, target_precision = self.arg_parser(sys.argv)
-        relevant_results = []
-        relevance = 0
-        while True:
-            search_results = self.bse.search(query)
-            for idx, result in enumerate(search_results):
-                print "--------------------------------"
-                print "Result " + str(idx + 1) + ": "
-                print "Title:", result['Title']
-                print "Url:", result['Url']
-                print "Description:", result['Description']
-                yes_or_no_relevant_str = raw_input("Is this result relevant? (Y/N) ")
-                if self.is_relevant(yes_or_no_relevant_str):
-                    relevant_results.append(result)
-                    relevance += 1
-            curr_precision = float(relevance) / 10
-            self.current_summary(curr_precision, target_precision)
-            if curr_precision >= target_precision:
-                print "Reach the target precision value, yeah!"
-                return 
-            if curr_precision == 0:
-                print "So sad, no matching result, stop."
-                return
-            if curr_precision == 1:
-                print "100% relevant!! Yeah!"
-                return
-            else:
-                print "Current precision is still lower than target precision value, continue"
-                continue
+        try:
+            while True:
+                relevant_results = []
+                non_relecant_results = []
+                curr_precision = relevance = 0
+                search_results = self.bse.search(query)
+                for idx, result in enumerate(search_results):
+                    print "--------------------------------"
+                    print "Result " + str(idx + 1) + ": "
+                    print "\tTitle:", result[TITLE]
+                    print "\tUrl:", result[URL]
+                    print "\tDescription:", result[DESC]
+                    yes_or_no_relevant_str = raw_input(
+                        "===> Is this result relevant? (Y/N) "
+                    )
+                    if self.is_relevant(yes_or_no_relevant_str):
+                        relevant_results.append(result)
+                        relevance += 1
+                    else:
+                        non_relecant_results.append(result)
 
+                curr_precision = float(relevance) / 10
+                self.current_summary(curr_precision, target_precision)
+                if curr_precision >= target_precision:
+                    print "Reach the target precision value, yeah!"
+                    return 
+                if curr_precision == 0:
+                    print "So sad, no matching result, stop."
+                    return
+                if curr_precision == 1:
+                    print "100% relevant!! Yeah!"
+                    return
+                else:
+                    print "Current precision is still lower than target precision value, continue..."
+                    query = self.qe.get_new_query(
+                        query, search_results, relevant_results, non_relecant_results
+                    )
+                    
+                    print "new query:", query
+                    continue
+        except KeyboardInterrupt:
+            print "\n\n\n"
+            print "+------------------------------------+"
+            print "| Leaving Query Expansion Program....|"
+            print "+------------------------------------+"
+            print "Bye ~"
+            sys.exit(1)
 
 if __name__ == "__main__":
     main = MainFunction()

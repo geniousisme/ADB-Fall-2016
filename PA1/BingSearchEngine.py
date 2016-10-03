@@ -6,14 +6,14 @@ import urllib2
 class BingSearchEngine(object):
 	def __init__(self):
 		self.account_key = 'qvgP+C20TXdZWmcBz34xkB2Ud0hG34a8IFmr4OpsaPQ'
-		self.bing_base_url = 												   \
-			'https://api.datamarket.azure.com/Bing/Search/Web?Query='
+		self.bing_base_url = 'https://api.datamarket.azure.com/Bing/Search/Web?Query='
 
 	def get_search_result(self, response):
 		content = json.load(response)
 		return content["d"]["results"]
 
 	def search(self, query, top=10, format='json'):
+		query = query.replace(' ', "%20")
 		bing_url = self.bing_base_url + '%27' + query + '%27&$top=' + str(top) \
 			+ '&$format=' + format
 		account_key_enccode = 												   \
