@@ -1,5 +1,6 @@
 import re
 import math
+import string
 
 from urlparse import urlparse
 
@@ -13,6 +14,8 @@ class QueryExpansion(object):
         self.all_word_stats = {}
         self.all_words_vector = set()
         self.idf_vector = []
+
+        # param for Rocchio
         self.alpha = 1.0
         self.beta = 0.75
         self.gama = 0.15
@@ -25,11 +28,12 @@ class QueryExpansion(object):
         updated_text = replaced_words_regex.sub(target_str, input_doc)
         return updated_text
 
-    def replace_stop_words(self, input_doc):
-        return self.replace_words_with_target_str(input_doc, stop_words)
+    def replace_non_ascii_with_space(self, input_doc):
+        return re.sub(r'[^\x00-\x7F]+', ' ', input_doc)
 
     def replace_special_chars(self, input_doc):
-        return self.replace_words_with_target_str(input_doc, special_chars)
+        input_ascii_doc = self.replace_non_ascii_with_space(input_doc)
+        return self.replace_words_with_target_str(input_ascii_doc, special_chars)
 
     def get_info_from_url(self, url):
         urlparse_obj = urlparse(url)
@@ -71,7 +75,7 @@ class QueryExpansion(object):
     def build_input_doc(self, res_json):
         input_res_list = [
                 res_json[TITLE], 
-                # self.get_info_from_url(res_json[URL]),
+                res_json[URL],
                 res_json[DESC]
         ]        
         input_doc = ' '.join(input_res_list)
@@ -80,8 +84,9 @@ class QueryExpansion(object):
 
     def initialize_query_vector(self, query):
         query_vector = []
+        query_words = self.split_input_doc_to_words(query)
         for word in self.all_words_vector:
-            if word == query:
+            if word in query_words:
                 query_vector.append(1.0)
             else:
                 query_vector.append(0.0)
@@ -123,15 +128,11 @@ class QueryExpansion(object):
             for idx, word in enumerate(self.all_words_vector):
                 if self.is_word_in_doc(word, input_doc):
                     idf_vector[idx] += 1.0
-        # print "D total document number:", D
         for i in xrange(len(idf_vector)):
-            # print "word:", self.all_words_vector[i] + ", d # include", self.all_words_vector[i], ":", idf_vector[i],
             idf_vector[i] = math.log(D / idf_vector[i], 2)
-            # print "idf value:", idf_vector[i]
         return idf_vector
 
     def get_factor_vector(self, res_jsons):
-        print self.all_words_vector
         factor_vector = [1] * len(self.all_words_vector)
         for res_json in res_jsons:
             input_title_doc = self.replace_special_chars(res_json[TITLE])
@@ -139,7 +140,6 @@ class QueryExpansion(object):
             for idx, word in enumerate(self.all_words_vector):
                 if word in title_words:
                     factor_vector[idx] = 1.2
-        print factor_vector
         return factor_vector
 
     def get_tfidf_vectors(self, res_jsons):
@@ -160,6 +160,7 @@ class QueryExpansion(object):
         tfidf_vectors = []
         R = len(relevant_res_jsons) if relevant_res_jsons else 1
         NR = len(non_relevant_res_jsons) if non_relevant_res_jsons else 1
+
         relevant_tfidf_vectors = self.get_tfidf_vectors(
             relevant_res_jsons
         )
@@ -185,7 +186,6 @@ class QueryExpansion(object):
             non_relevant_tfidf_vectors_sum,
              -self.gama / NR
         )
-
         vectors = []
         if query_vector:
             vectors.append(query_vector)
@@ -205,20 +205,19 @@ class QueryExpansion(object):
         )
         for idx, word in enumerate(self.all_words_vector):
             word_weight_dict[word] = weight_vector[idx]
-        print word_weight_dict
+
         self.all_words_vector = sorted(
             self.all_words_vector, key=word_weight_dict.get, reverse=True
         )
         
         # pick two words from the sorted word vector
-        augmented_words = []
         query_words = self.split_input_doc_to_words(query)
-        print query_words
+        augmented_words = []
         i = 0
         while len(augmented_words) < 2 and i < len(self.all_words_vector):
             word = self.all_words_vector[i]
             i += 1
-            if word in query_words:
+            if word in query_words or not isinstance(word, str):
                 continue
             else:
                 augmented_words.append(word)

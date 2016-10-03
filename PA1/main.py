@@ -39,9 +39,10 @@ class MainFunction(object):
             return query, target_precision
 
     def is_relevant(self, yes_or_no_relevant_str):
-        if yes_or_no_relevant_str.lower() == 'y':
+        yes_or_no_relevant_str = yes_or_no_relevant_str.lower()
+        if yes_or_no_relevant_str == 'y':
             return True
-        if yes_or_no_relevant_str.lower() == 'n':
+        elif yes_or_no_relevant_str == 'n':
             return False
         else:
             print "Cannot recognise the answer, count as not relevant."
@@ -75,6 +76,7 @@ class MainFunction(object):
                         relevance += 1
                     else:
                         non_relecant_results.append(result)
+
                 curr_precision = float(relevance) / 10
                 self.current_summary(curr_precision, target_precision)
                 if curr_precision >= target_precision:
@@ -89,7 +91,7 @@ class MainFunction(object):
                 else:
                     print "Current precision is still lower than target precision value, continue..."
                     query = self.qe.get_new_query(
-                        query, relevant_results, non_relecant_results, search_results
+                        query, search_results, relevant_results, non_relecant_results
                     )
                     
                     print "new query:", query
