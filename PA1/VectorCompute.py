@@ -15,6 +15,8 @@ class VectorCompute(object):
         return [vector1[i] - vector2[i] for i in xrange(len(vector1))]
 
     def vector_sum(self, vectors):
+        if not vectors:
+            return vectors
         vector_width = len(vectors)
         vector_len = len(vectors[0])
         sum_vector = []
