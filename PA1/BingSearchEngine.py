@@ -21,9 +21,3 @@ class BingSearchEngine(object):
         response = urllib2.urlopen(request)
 
         return self.get_search_result(response)
-
-if __name__ == "__main__":
-    bse = BingSearchEngine()
-    results = bse.search("musk")
-    pprint.pprint(results, indent=2)
-
