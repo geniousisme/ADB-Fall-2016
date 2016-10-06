@@ -9,25 +9,23 @@ from Utils import WrongRangePrecisionError
 
 class MainFunction(object):
     def __init__(self):
-        self.bse = BingSearchEngine()
         self.qe = QueryExpansion()
-        self.bing_key = ''
 
     def helper(self):
-        print "python main.py <query> <target precision>"
-        print "ex. python main.py 'musk' 0.9"
+        print "python main.py <bing_key> <target precision> <query>"
+        print "ex. python main.py XXXXXXXXXXXX 0.9 musk"
         sys.exit(1)
     
     def arg_parser(self, commands):
         target_precision = 0.9
         query = ""
         try:
-            if len(commands) < 3 or len(commands) > 4:
+            if len(commands) < 4 or len(commands) > 5:
                 self.helper()
-            if len(commands) == 3:
+            if len(commands) == 4:
                 bing_key = commands[1]
-                query = commands[2]
                 target_precision = float(commands[2])
+                query = commands[3]
                 if target_precision < 0 or target_precision > 1:
                     raise WrongRangePrecisionError
         except ValueError:
@@ -49,11 +47,21 @@ class MainFunction(object):
             print "Cannot recognise the answer, count as not relevant."
             return False
 
-    def current_summary(self, curr_precision, target_precision):
-        print "\n\n\n"
-        print "======== Current Summary ========"
-        print "Target Precision Value:", target_precision
-        print "Current Precision Value:", curr_precision
+    def feedback_summary(self, query, curr_precision, target_precision):
+        print "\n"
+        print "======================\nFEEDBACK SUMMARY"
+        print "Query", query
+        print "Precision", curr_precision
+
+    def params_info(self, bing_key, query, target_precision, search_url):
+        print "Parameters:"
+        print "Client key  =", bing_key
+        print "Query       =", query
+        print "Precision   =", target_precision
+        print "URL:", search_url
+        print "Total no of results : 10"
+        print "Bing Search Results:"
+        print "======================"
 
     def query_loop(self):
         bing_key, query, target_precision = self.arg_parser(sys.argv)
@@ -62,13 +70,19 @@ class MainFunction(object):
                 relevant_results = []
                 non_relecant_results = []
                 curr_precision = relevance = 0
-                search_results = self.bse.search(query)
+                self.bse = BingSearchEngine(bing_key, query)
+                self.params_info(
+                    bing_key, query, target_precision, self.bse.bing_search_url
+                )
+                search_results = self.bse.search()
                 for idx, result in enumerate(search_results):
-                    print "--------------------------------"
-                    print "Result " + str(idx + 1) + ": "
-                    print "\tTitle:", result[TITLE]
-                    print "\tUrl:", result[URL]
-                    print "\tDescription:", result[DESC]
+                    
+                    print "Result " + str(idx + 1)
+                    print "["
+                    print "  Url:", result[URL]
+                    print "  Title:", result[TITLE]
+                    print "  Summary:", result[DESC]
+                    print "]"
                     yes_or_no_relevant_str = raw_input(
                         "===> Is this result relevant? (Y/N) "
                     )
@@ -79,23 +93,22 @@ class MainFunction(object):
                         non_relecant_results.append(result)
 
                 curr_precision = float(relevance) / 10
-                self.current_summary(curr_precision, target_precision)
+                self.feedback_summary(query, curr_precision, target_precision)
                 if curr_precision >= target_precision:
-                    print "Reach the target precision value, yeah!"
+                    print "Desired precision reached, done"
                     return 
                 if curr_precision == 0:
-                    print "So sad, no matching result, stop."
-                    return
-                if curr_precision == 1:
-                    print "100% relevant!! Yeah!"
+                    print "Below desired precision, but can no longer augment the query"
                     return
                 else:
-                    print "Current precision is still lower than target precision value, continue..."
-                    query = self.qe.get_new_query(
+                    print "Still below the desired precision of", target_precision
+                    print "Indexing results ...."
+                    augmented_words = self.qe.get_augmented_words(
                         query, search_results, relevant_results, non_relecant_results
                     )
-                    
-                    print "new query:", query
+                    print "Indexing results ...."
+                    print "Augmenting by", augmented_words[0], augmented_words[1]
+                    query = query + ' ' + ' '.join(augmented_words)
                     continue
         except KeyboardInterrupt:
             print "\n\n\n"

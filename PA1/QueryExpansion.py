@@ -200,7 +200,7 @@ class QueryExpansion(object):
 
         return rocchio_query_vector
 
-    def get_new_query(self, query, all_res_jsons, 
+    def get_augmented_words(self, query, all_res_jsons, 
             relevant_res_jsons, non_relevant_res_jsons):
         word_weight_dict = {}
         weight_vector = self.compute_weight_vector(
@@ -224,12 +224,7 @@ class QueryExpansion(object):
                 continue
             else:
                 augmented_words.append(word)
-
-        print "result word vector\n", self.all_words_vector
-        print "augment word 1:", augmented_words[0]
-        print "augment word 2:", augmented_words[1]
-
-        return query + " " + augmented_words[0] + " " + augmented_words[1]
+        return augmented_words
 
 
 if __name__ == "__main__":
