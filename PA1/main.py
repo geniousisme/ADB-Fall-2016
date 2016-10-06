@@ -11,6 +11,7 @@ class MainFunction(object):
     def __init__(self):
         self.bse = BingSearchEngine()
         self.qe = QueryExpansion()
+        self.bing_key = ''
 
     def helper(self):
         print "python main.py <query> <target precision>"
@@ -21,14 +22,14 @@ class MainFunction(object):
         target_precision = 0.9
         query = ""
         try:
-            if len(commands) < 2 or len(commands) > 3:
+            if len(commands) < 3 or len(commands) > 4:
                 self.helper()
-            if len(commands) >= 2:
-                query = commands[1]
-                if len(commands) == 3:
-                    target_precision = float(commands[2])
-            if  target_precision < 0 or target_precision > 1:
-                raise WrongRangePrecisionError
+            if len(commands) == 3:
+                bing_key = commands[1]
+                query = commands[2]
+                target_precision = float(commands[2])
+                if target_precision < 0 or target_precision > 1:
+                    raise WrongRangePrecisionError
         except ValueError:
             print "please input the number type value between 0 - 1 for precision"
             sys.exit(1)
@@ -36,7 +37,7 @@ class MainFunction(object):
             print "please input the precision value between 0 - 1"
             sys.exit(1)
         else:
-            return query, target_precision
+            return bing_key, query, target_precision
 
     def is_relevant(self, yes_or_no_relevant_str):
         yes_or_no_relevant_str = yes_or_no_relevant_str.lower()
@@ -55,7 +56,7 @@ class MainFunction(object):
         print "Current Precision Value:", curr_precision
 
     def query_loop(self):
-        query, target_precision = self.arg_parser(sys.argv)
+        bing_key, query, target_precision = self.arg_parser(sys.argv)
         try:
             while True:
                 relevant_results = []

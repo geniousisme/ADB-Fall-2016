@@ -1,3 +1,9 @@
+'''
+TODO::Imporve the performance, now it take too long to calculate
+TODO::some interface is not clear enough to do some modification
+TODO::delete some not used func
+'''
+
 import re
 import math
 import string
@@ -111,10 +117,7 @@ class QueryExpansion(object):
             if word_stats.get(word):
                 tf_vector.append(word_stats.get(word) / total_freq)
             else:
-                tf_vector.append(0)
-        # for word in self.all_words_vector:
-        #     print "word:", word, "freq:", word_stats.get(word, 0), "tf:", (word_stats.get(word, 0) / total_freq)
-        
+                tf_vector.append(0)        
         return tf_vector
     
     def is_word_in_doc(self, word, doc):
