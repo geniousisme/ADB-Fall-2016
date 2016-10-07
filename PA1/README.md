@@ -71,12 +71,26 @@ The query modification algorithm is composed of the following parts:
     nij is the frequency the word i appears in this document j. The denominator is the summation of all words' frequency in this document.
 
 5. Compute tf-idf vector:<br>
-
+    Now we get tf & idf vectors, we use the following formula to get tf-idf value for all the words:
+    ![Imgur](http://i.imgur.com/5R0qgOW.png)
     
+    Now we have the 2D vectors for all words tf-idf value in each documents.
+
+6. Compute weight vector by Rocchio's Algo:<br>
+    Now, we pick up the categorize relevant tf-idf vectors & non-relevant tf-idf vectors from the result we get from above steps. And         follow Rocchio's algorithm to get our updated weight vectors for each word:
+    ![Imgur](http://i.imgur.com/cjBfweI.png)
+    
+    We set a = 1, b = 0.75, c = 0.15 according to the reference we have.
+
+7. Sort the weight vector by reversed order:<br>
+   Now we already have updated weight vector for each word. We sort them with the weight by decreasing order, since we only want the first    two words with biggest weight.
+
+8. Pick up the first two words and append them with current query<br>
 
 ### f) Your Bing Search Account Key
     key: qvgP+C20TXdZWmcBz34xkB2Ud0hG34a8IFmr4OpsaPQ
 ### g) Any additional information that you consider significant 
+We also try title enhancement for our case, but the result doesn't improve too much in the end, sometimes it makes the result even worse since there are some words that will make the result become weird. Take "taj mahel" as example. If we do the title enhancement, then the augumented words the algorithm will pick will be "video" & "streaming" since these two words are in the title of the relevant results.
 
 ### Reference:
 Stop Word List: http://xpo6.com/list-of-english-stop-words/ <br>
