@@ -1,3 +1,5 @@
+import re
+
 special_chars = [
 	",",".",":","-","?","!","'","/","&","|",";","_","=","+","#",
     "^","*","~","\\","\'","\"","\u","\n","%","$","@","(",")","[","]",
@@ -379,3 +381,18 @@ stop_words = [
 
 class WrongRangePrecisionError(Exception):
    pass
+
+def replace_non_ascii_with_space(input_doc):
+        return re.sub(r'[^\x00-\x7F]+', ' ', input_doc)
+
+def replace_special_chars(input_doc):
+    input_ascii_doc = self.replace_non_ascii_with_space(input_doc)
+    return self.replace_words_with_target_str(input_ascii_doc, special_chars)
+
+def replace_words_with_target_str(self, input_doc, 
+        replaced_words, target_str=" "):
+    replaced_words_regex = re.compile(
+        '|'.join(map(re.escape, replaced_words))
+    )
+    updated_text = replaced_words_regex.sub(target_str, input_doc)
+    return updated_text

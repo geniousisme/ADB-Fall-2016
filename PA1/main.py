@@ -5,11 +5,15 @@ import sys
 from BingSearchEngine import BingSearchEngine
 from DocumentEnum import TITLE, URL, DESC
 from QueryExpansion import QueryExpansion
-from Utils import WrongRangePrecisionError
+from Utils import WrongRangePrecisionError, replace_non_ascii_with_space, replace_special_chars
 
 class MainFunction(object):
     def __init__(self):
         self.qe = QueryExpansion()
+        self.transcript = open("transcript.txt", "a+")
+
+    def __del__(self):
+        self.transcript.close()
 
     def helper(self):
         print "python main.py <bing_key> <target precision> <query>"
@@ -17,7 +21,6 @@ class MainFunction(object):
         sys.exit(1)
     
     def arg_parser(self, commands):
-        target_precision = 0.9
         query = ""
         try:
             if len(commands) < 4 or len(commands) > 5:
@@ -39,11 +42,15 @@ class MainFunction(object):
 
     def is_relevant(self, yes_or_no_relevant_str):
         yes_or_no_relevant_str = yes_or_no_relevant_str.lower()
+        self.transcript.write("Relevant ")
         if yes_or_no_relevant_str == 'y':
+            self.transcript.write("YES\n")
             return True
         elif yes_or_no_relevant_str == 'n':
+            self.transcript.write("NO\n")
             return False
         else:
+            self.transcript.write("NO\n")
             print "Cannot recognise the answer, count as not relevant."
             return False
 
@@ -63,20 +70,31 @@ class MainFunction(object):
         print "Bing Search Results:"
         print "======================"
 
+    def result_str(self, url, title, desc):
+        url_str = "  Url: " + url
+        title_str = "  Title: " + title
+        desc_str = "  Summary: " + desc
+        return '\n'.join(['[', url_str, title_str, desc_str, "]\n\n\n"])
+
     def query_loop(self):
         bing_key, query, target_precision = self.arg_parser(sys.argv)
+        iter_round = 0
         try:
             while True:
+                iter_round += 1
                 relevant_results = []
                 non_relecant_results = []
                 curr_precision = relevance = 0
+                self.transcript.write("=====================================\n")
+                self.transcript.write("ROUND " + str(iter_round) + "\n")
+                self.transcript.write("QUERY " + query + "\n\n")
                 self.bse = BingSearchEngine(bing_key, query)
                 self.params_info(
                     bing_key, query, target_precision, self.bse.bing_search_url
                 )
                 search_results = self.bse.search()
                 for idx, result in enumerate(search_results):
-                    
+                    self.transcript.write("Result " + str(idx + 1) + "\n")
                     print "Result " + str(idx + 1)
                     print "["
                     print "  Url:", result[URL]
@@ -91,8 +109,17 @@ class MainFunction(object):
                         relevance += 1
                     else:
                         non_relecant_results.append(result)
+                    
+                    self.transcript.write(
+                        self.result_str(
+                            result[URL],
+                            replace_non_ascii_with_space(result[TITLE]),
+                            replace_non_ascii_with_space(result[DESC])
+                        )
+                    )
 
                 curr_precision = float(relevance) / 10
+                self.transcript.write("PRECISION " + str(curr_precision) + "\n")
                 self.feedback_summary(query, curr_precision, target_precision)
                 if curr_precision >= target_precision:
                     print "Desired precision reached, done"
