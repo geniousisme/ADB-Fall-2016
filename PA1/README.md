@@ -25,7 +25,7 @@ python main.py qvgP+C20TXdZWmcBz34xkB2Ud0hG34a8IFmr4OpsaPQ 0.9 musk
 ```
 ### d) Internal Design
 - **main.py**<br>
-    In this file, there are several functions under MainFunc class. We basically provide the functionality to parse the arguments in the       command line, print out information for search, write the information into transcript.txt and call QueryExpansion.py to generate the       updated augumented words for query. We initialize the query as user input and also set up the target precision followed with user         input. Then, based on user's feedback, we can know what current precision is. If current precision is still below target precision, we     will call Query Expansion function to generate augmented words for new query. Once the precision reaches the target precision, the         program will stop. Otherwise, it will repeat itself, just like above process.
+    In this file, there are several functions under MainFunc class. We basically provide the functionality to parse the arguments in the       command line, print out information for search, write the information into transcript.txt and call QueryExpansion.py to generate the       updated augmented words for query. We initialize the query as user input and also set up the target precision followed with user         input. Then, based on user's feedback, we can know what current precision is. If current precision is still below target precision, we     will call Query Expansion function to generate augmented words for new query. Once the precision reaches the target precision, the         program will stop. Otherwise, it will repeat itself, just like above process.
 
 - **QueryExpansion.py**<br>
     This file includes several function implementations that contain the algorithm we will explain later in part(e)
@@ -34,13 +34,13 @@ python main.py qvgP+C20TXdZWmcBz34xkB2Ud0hG34a8IFmr4OpsaPQ 0.9 musk
     Format the query to url format, call Bing Search API, and return the JSON format result.
 
 - **VectorCompute.py**<br>
-    Implement several computation function for vectors, like dot product, sum up two vectors, minus two vectors.
+    Implement several computation functions for vectors, like dot product, sum up two vectors, minus two vectors.
 
 - **DocumentEnum.py**<br>
-    Define several constants which we don't want user or even developer easily to change.
+    Define several constants, which we don't want user or even developer easily to change.
 
 - **Utils.py**<br>
-    Includes stop word list and special charater list, which I will use to remove stop words & special charaters from the input document.     Also, we include some utility function, like replace_non_ascii_with_space, replace_special_chars, in this file, and the error class we     define by ourselves.
+    Includes stop word list and special character list, which I will use to remove stop words & special characters from the input document.     Also, we include some utility function, like replace_non_ascii_with_space, replace_special_chars, in this file, and the error class we     define by ourselves.
 
 ### e) Description Of Query-Modification Method
 
@@ -90,9 +90,10 @@ The query modification algorithm is composed of the following parts:
 ### f) Your Bing Search Account Key
     key: qvgP+C20TXdZWmcBz34xkB2Ud0hG34a8IFmr4OpsaPQ
 ### g) Any additional information that you consider significant 
-We also try title enhancement for our case, but the result doesn't improve too much in the end, sometimes it makes the result even worse since there are some words that will make the result become weird. Take "taj mahel" as example. If we do the title enhancement, then the augumented words the algorithm will pick will be "video" & "streaming" since these two words are in the title of the relevant results.
+We also try title enhancement for our case, but the result doesn't improve too much in the end, sometimes it makes the result even worse since there are some words that will make the result become weird. Take "taj mahel" as example. If we do the title enhancement, then the augmented words the algorithm will pick will be "video" & "streaming" since these two words are in the title of the relevant results.
 
 ### Reference:
 Stop Word List: http://xpo6.com/list-of-english-stop-words/ <br>
 Modern Information Retrieval: A Brief Overview http://www.cs.columbia.edu/~gravano/cs6111/Readings/singhal.pdf <br>
 Introduction to Information Retrieval, Ch 9: http://nlp.stanford.edu/IR-book/
+
