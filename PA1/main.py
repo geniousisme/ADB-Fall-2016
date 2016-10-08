@@ -55,8 +55,7 @@ class MainFunction(object):
             return False
 
     def feedback_summary(self, query, curr_precision, target_precision):
-        print "\n"
-        print "======================\nFEEDBACK SUMMARY"
+        print "\n======================\nFEEDBACK SUMMARY"
         print "Query", query
         print "Precision", curr_precision
 

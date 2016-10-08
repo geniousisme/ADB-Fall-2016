@@ -1,9 +1,9 @@
 import re
 
 special_chars = [
-	",",".",":","-","?","!","'","/","&","|",";","_","=","+","#",
-    "^","*","~","\\","\'","\"","\u","\n","%","$","@","(",")","[","]",
-    "{","}"
+	",",".",":","?","!","'","/","&",";","_","=","+","#","^",
+    "*","~","\\","\'","\"","\u","\n","%","$","@","(",")","[","]",
+    "{","}", "-", "|"
 ]
 
 stop_words = [
@@ -383,16 +383,57 @@ class WrongRangePrecisionError(Exception):
    pass
 
 def replace_non_ascii_with_space(input_doc):
-        return re.sub(r'[^\x00-\x7F]+', ' ', input_doc)
+    return re.sub(r'[^\x00-\x7F]+', ' ', input_doc)
 
 def replace_special_chars(input_doc):
-    input_ascii_doc = self.replace_non_ascii_with_space(input_doc)
-    return self.replace_words_with_target_str(input_ascii_doc, special_chars)
+    input_ascii_doc = replace_non_ascii_with_space(input_doc)
+    return replace_words_with_target_str(input_ascii_doc, special_chars)
 
-def replace_words_with_target_str(self, input_doc, 
-        replaced_words, target_str=" "):
+def replace_words_with_target_str(input_doc, replaced_words, target_str=" "):
     replaced_words_regex = re.compile(
         '|'.join(map(re.escape, replaced_words))
     )
     updated_text = replaced_words_regex.sub(target_str, input_doc)
     return updated_text
+
+def count_frequency(item_str):
+    item_stats = {}
+    items = split_input_doc_to_words(item_str)
+    for item in items:
+        if item_stats.get(item):
+            item_stats[item] += 1.0
+        else:
+            item_stats[item] = 1.0
+    return item_stats
+
+def remove_stop_words(words):
+    i = 0
+    while i < len(words):
+        if words[i].lower() in stop_words or words[i] == '':
+            words.pop(i)
+        else:
+            words[i] = words[i].lower()
+            i += 1
+    return words
+
+def split_input_doc_to_words(input_doc):
+    words = input_doc.split(' ')
+    words = remove_stop_words(words)
+    return words
+
+def clean_up_title(title_str):
+    ascii_title_str = replace_non_ascii_with_space(title_str)
+    special_char_idx = len(ascii_title_str)
+    for special_char in special_chars:
+        curr_special_char_idx = ascii_title_str.find(special_char)
+        if curr_special_char_idx == -1:
+            continue
+        else:
+            if curr_special_char_idx < special_char_idx:
+                special_char_idx = curr_special_char_idx        
+    modified_title = title_str[:special_char_idx]
+    if not modified_title:
+        return title_str
+    return modified_title
+
+
