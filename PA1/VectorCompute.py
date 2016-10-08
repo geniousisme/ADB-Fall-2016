@@ -23,7 +23,3 @@ class VectorCompute(object):
         for j in xrange(vector_len):
             sum_vector.append(sum(vectors[i][j] for i in xrange(vector_width)))
         return sum_vector
-
-if __name__ == "__main__":
-    vc = VectorCompute()
-    print vc.vector_sum([[0.005, 0.5, 3.2], [0, 1.7, 0.4]])

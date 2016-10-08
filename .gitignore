@@ -5,3 +5,5 @@
 .DS_Store
 reference/*
 *_copy.py
+group1-*
+*.txt

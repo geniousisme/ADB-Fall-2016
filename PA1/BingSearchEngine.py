@@ -4,29 +4,20 @@ import pprint
 import urllib2
 
 class BingSearchEngine(object):
-	def __init__(self):
-		self.account_key = 'qvgP+C20TXdZWmcBz34xkB2Ud0hG34a8IFmr4OpsaPQ'
-		self.bing_base_url = 'https://api.datamarket.azure.com/Bing/Search/Web?Query='
+    def __init__(self, bing_key, query):
+    	query = query.replace(' ', "%20")
+    	self.bing_key = bing_key
+        self.bing_base_url = 'https://api.datamarket.azure.com/Bing/Search/Web?Query='
+        self.bing_search_url = self.bing_base_url + '%27' + query + '%27&$top=10&$format=json'
 
-	def get_search_result(self, response):
-		content = json.load(response)
-		return content["d"]["results"]
+    def get_search_result(self, response):
+        content = json.load(response)
+        return content["d"]["results"]
 
-	def search(self, query, top=10, format='json'):
-		query = query.replace(' ', "%20")
-		bing_url = self.bing_base_url + '%27' + query + '%27&$top=' + str(top) \
-			+ '&$format=' + format
-		account_key_enccode = 												   \
-			base64.b64encode(self.account_key + ':' + self.account_key)
-		headers = {'Authorization': 'Basic ' + account_key_enccode}
+    def search(self):
+        account_key_enccode = base64.b64encode(self.bing_key + ':' + self.bing_key)
+        headers = {'Authorization': 'Basic ' + account_key_enccode}
+        request = urllib2.Request(self.bing_search_url, headers=headers)
+        response = urllib2.urlopen(request)
 
-		request = urllib2.Request(bing_url, headers=headers)
-		response = urllib2.urlopen(request)
-
-		return self.get_search_result(response)
-
-if __name__ == "__main__":
-	bse = BingSearchEngine()
-	results = bse.search("musk")
-	pprint.pprint(results, indent=2)
-
+        return self.get_search_result(response)
