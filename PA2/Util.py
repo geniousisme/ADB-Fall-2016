@@ -1,5 +1,9 @@
 from enum import Enum
 
+class WrongRangeError(Exception):
+   def __init__(self):
+    self.message = ""
+
 class Web(Enum):
     Url = "Url"
     Title = "Title"
