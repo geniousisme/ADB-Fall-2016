@@ -6,4 +6,4 @@
 reference/*
 *_copy.py
 group1-*
-*.txt
+output.txt
