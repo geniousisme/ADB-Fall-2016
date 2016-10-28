@@ -20,6 +20,9 @@ class Category(object):
     def __repr__(self):
         return "<Category_Obj: " + self.name + ">"
 
+    def __eq__(self, other):
+        return self.name == other.name
+
     def get_sub_categ(self, target_categ):
         for sub_categ in self.sub_categs:
             if target_categ.name == sub_categ.name:
@@ -61,13 +64,6 @@ def init_categories():
     build_category(root_categ)
     for categ in root_categ.sub_categs:
         build_category(categ)
-    # for sub_categ in root_categ.sub_categs:
-    #     print sub_categ
-    #     print sub_categ.queries
-    #     print sub_categ.sub_categs
-    #     for sub_sub_categ in sub_categ.sub_categs:
-    #         print "\t", sub_sub_categ
-    #         print "\t", sub_sub_categ.queries
     return root_categ
 
 if __name__ == "__main__":
