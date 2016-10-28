@@ -1,11 +1,9 @@
 from collections import defaultdict
 
 from BingSearchEngine import BingSearchEngine
-from Category import CategName, init_categories
+from Category import CategName, Category, init_categories
 
 class QProber(object):
-    def __init__(self):
-        self.bse = None
 
     def probe(self, bing_key, target_especificity, target_ecoverage, host):
         print "Classifying..."
@@ -18,12 +16,13 @@ class QProber(object):
         t_ecov = target_ecoverage
         self.root_categ = init_categories()
         self.result_categ_dict[self.root_categ] = {}
+        self.result_categ = None
         self.classify(self.root_categ, t_ecov, t_espec, 1.0)
-        self.result_categ_dict
+        self.result_categ.show_classif()
     
     def classify(self, src_categ, t_ecov, t_espec, src_categ_espec):
-        '''R
-        Implementation of 
+        '''
+        Implementation of QProbe
         '''
         total_coverage = 0
         for sub_categ in src_categ.sub_categs:
@@ -47,6 +46,10 @@ class QProber(object):
                     self.categ_coverage_dict[sub_categ] >= t_ecov):
                 if src_categ == self.root_categ:
                     self.result_categ_dict[src_categ][sub_categ] = []
+                    self.result_categ = Category(src_categ.name)
+                    self.result_categ.sub_categs.append(
+                        Category(sub_categ.name)
+                    )
                     self.classify(
                         sub_categ, 
                         t_ecov, 
@@ -57,6 +60,9 @@ class QProber(object):
                     self.result_categ_dict[self.root_categ][
                         src_categ
                     ].append(sub_categ)
+                    self.result_categ.get_sub_categ(
+                        src_categ
+                    ).sub_categs.append(Category(sub_categ.name))
 
 
 
