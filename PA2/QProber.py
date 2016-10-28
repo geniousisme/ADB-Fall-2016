@@ -11,11 +11,9 @@ class QProber(object):
         self.host = host
         self.categ_specificity_dict = defaultdict(float)
         self.categ_coverage_dict = defaultdict(float)
-        self.result_categ_dict = {}
         t_espec = target_especificity
         t_ecov = target_ecoverage
         self.root_categ = init_categories()
-        self.result_categ_dict[self.root_categ] = {}
         self.result_categ = None
         self.classify(self.root_categ, t_ecov, t_espec, 1.0)
         self.result_categ.show_classif()
@@ -45,7 +43,6 @@ class QProber(object):
             if (self.categ_specificity_dict[sub_categ] >= t_espec and 
                     self.categ_coverage_dict[sub_categ] >= t_ecov):
                 if src_categ == self.root_categ:
-                    self.result_categ_dict[src_categ][sub_categ] = []
                     self.result_categ = Category(src_categ.name)
                     self.result_categ.sub_categs.append(
                         Category(sub_categ.name)
@@ -57,9 +54,6 @@ class QProber(object):
                         self.categ_specificity_dict[sub_categ]
                     )
                 else:
-                    self.result_categ_dict[self.root_categ][
-                        src_categ
-                    ].append(sub_categ)
                     self.result_categ.get_sub_categ(
                         src_categ
                     ).sub_categs.append(Category(sub_categ.name))
