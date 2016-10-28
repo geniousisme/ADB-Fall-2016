@@ -1,6 +1,5 @@
 import sys
 
-from Category import init_categories
 from QProber import QProber
 from Util import WrongRangeError
 
@@ -39,6 +38,8 @@ class MainFunction(object):
 
     def run(self):
         bing_key, t_es, t_ec, host = self.arg_parser(sys.argv)
+        results = self.qprober.probe(bing_key, t_es, t_ec, host)
+
 
 
         

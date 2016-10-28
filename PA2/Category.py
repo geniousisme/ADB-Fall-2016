@@ -18,7 +18,7 @@ class Category(object):
         return "Category: " + self.name
 
     def __repr__(self):
-        return "Category: " + self.name
+        return "<Category_Obj: " + self.name + ">"
 
 def build_category(source_categ):
     categ_query_dict = extract_query_for_category(source_categ.name)
