@@ -37,8 +37,8 @@ class QProber(object):
                 / total_coverage)
             )
 
-            print "Specificity for category:", sub_categ, "is", self.categ_specificity_dict[sub_categ]
-            print "Coverage for category:", sub_categ, "is", self.categ_coverage_dict[sub_categ]
+            print "Specificity for category:", sub_categ.name, "is", self.categ_specificity_dict[sub_categ]
+            print "Coverage for category:", sub_categ.name, "is", self.categ_coverage_dict[sub_categ]
 
             if (self.categ_specificity_dict[sub_categ] >= t_espec and 
                     self.categ_coverage_dict[sub_categ] >= t_ecov):
