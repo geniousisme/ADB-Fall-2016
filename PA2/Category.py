@@ -11,6 +11,7 @@ class CategName(Enum):
 class Category(object):
     def __init__(self, categ_name):
         self.name = categ_name
+        self.parent_categ = None
         self.sub_categs = []
         self.queries = []
 
@@ -56,6 +57,7 @@ def build_category(source_categ):
     categ_query_dict = extract_query_for_category(source_categ.name)
     for categ_name, queries in categ_query_dict.items():
         new_categ = Category(categ_name)
+        new_categ.parent_categ = source_categ
         new_categ.queries = categ_query_dict[categ_name]
         source_categ.sub_categs.append(new_categ)
 
