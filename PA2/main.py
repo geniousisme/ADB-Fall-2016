@@ -8,7 +8,7 @@ from Util import WrongRangeError
 class MainFunction(object):
     def __init__(self):
         self.qprober = QProber()
-        self.cnt_sumr = ContentSummarizer()
+        self.cnt_summr = None
         
     def __del__(self):
         pass
@@ -41,7 +41,8 @@ class MainFunction(object):
     def run(self):
         bing_key, t_es, t_ec, host = self.arg_parser(sys.argv)
         self.qprober.probe(bing_key, t_es, t_ec, host)
-        self.cnt_sumr.summarize()
+        self.cnt_summr = ContentSummarizer(self.qprober.bse.categ_urls_dict)
+        self.cnt_summr.summarize()
         
 if __name__ == "__main__":
     main = MainFunction()
