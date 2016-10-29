@@ -5,9 +5,12 @@ class WrongRangeError(Exception):
     self.message = ""
 
 class Web(Enum):
+    DOC = -4
+    XDOC = -5
     Url = "Url"
     Title = "Title"
     Desc = "Description"
+    References = "References"
 
 def extract_query_for_category(category_name):
     f = open(category_name + '.txt', 'r')
