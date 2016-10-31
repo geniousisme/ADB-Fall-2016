@@ -30,6 +30,9 @@ class Category(object):
                 return sub_categ
         return None
 
+    def is_root_categ(self):
+        return self.name == CategName.Root
+
     def show(self):
         print self
         for sub_categ in self.sub_categs:
