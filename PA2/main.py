@@ -9,9 +9,6 @@ class MainFunction(object):
     def __init__(self):
         self.qprober = QProber()
         self.cnt_summr = None
-        
-    def __del__(self):
-        pass
 
     def helper(self):
         print "python main.py <bing_key> <BING_ACCOUNT_KEY> <t_es> <t_ec> <host>"
@@ -41,7 +38,9 @@ class MainFunction(object):
     def run(self):
         bing_key, t_es, t_ec, host = self.arg_parser(sys.argv)
         self.qprober.probe(bing_key, t_es, t_ec, host)
-        self.cnt_summr = ContentSummarizer(self.qprober.bse.categ_urls_dict)
+        self.cnt_summr = ContentSummarizer(
+            self.qprober.bse.categ_urls_dict, host
+        )
         self.cnt_summr.summarize()
         
 if __name__ == "__main__":

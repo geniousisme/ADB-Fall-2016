@@ -7,10 +7,11 @@ from Category import CategName
 from Util import Web
 
 class ContentSummarizer(object):
-    def __init__(self, categ_urlset_dict):
+    def __init__(self, categ_urlset_dict, host):
         self.categ_urlset_dict = categ_urlset_dict
-        self.urls_len = 0
+        self.host = host
         self.root_urlset = set()
+        self.root_content_summary = {}
 
     def __is_doc_url(self, url):
         return (url[Web.DOC:] == ".pdf" 
@@ -45,36 +46,53 @@ class ContentSummarizer(object):
             else:
                 if char == ']':
                     is_in_brackets = False
-        return set(parsed_page.split(' '))
+        return set(parsed_page.split())
 
     def __fetch_page(self, url):
         '''Return set of words from the url page
         Fetch page through lynx and parse the page
         '''
+        print "Getting page:", url
+
         if self.__is_doc_url(url):
-            print "skip"
+            print "skip\n\n"
             return set()
         try:
             page_output = check_output("lynx --dump " + url, shell=True)
+            print "\n\n"
             return self.__page_parser(page_output)
 
         except Exception as e:
             print e
-            print "Error occured, pass"
-            pass
+            print "Error occured, pass\n\n"
+            return set()
 
     def __summarize_for_categ(self, categ):
-        '''Return word document frequency stats(i.e. dictionary) for the categ,
-        input: Category class, plz look through Category class code
-        output: dictionary, which is java hash_map, ex. {'a':123, 'aaa':345, 'dog':3,...}
-        
-        Requirement: 
-        Should seperate two cases, if categ is "Root" and if categ is not "Root".
-        Try to eliminate the time to fetch the page, you can get clues from my code.
-        [Hint] use self.root_urlset
-        '''
         urlset = self.categ_urlset_dict[categ]
-        # Write your code here...
+        urlset_len = len(urlset)
+        if not categ.is_root_categ():
+            content_summary = {}
+        else:
+            content_summary = self.root_content_summary
+
+        # Count word document frequency
+        url_count = 1
+        for url in urlset:
+            print url_count, '/', urlset_len
+            page_wordset = self.__fetch_page(url)
+            for word in page_wordset:
+                content_summary[word] = content_summary.get(word, 0.0) + 1.0
+                if not categ.is_root_categ() and url not in self.root_urlset:
+                    self.root_content_summary[word] = (
+                        self.root_content_summary.get(word, 0.0) + 1.0
+                    )
+            url_count += 1
+
+        # Record the word doc freq into the file
+        f = open(categ.name + '-' + self.host + '.txt', 'w')
+        for word, freq in sorted(content_summary.items()):
+            f.write(word + '#' + str(freq) + '\n')
+        f.close()
 
     def summarize(self):
         root_categ = None
@@ -89,7 +107,6 @@ class ContentSummarizer(object):
             self.categ_urlset_dict[root_categ] - self.root_urlset
         )
         self.__summarize_for_categ(root_categ)
-
 
 if __name__ == "__main__":
     cnt_sumarz = ContentSummarizer()
