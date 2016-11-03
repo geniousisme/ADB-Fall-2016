@@ -10,7 +10,7 @@ class Web(Enum):
     Url = "Url"
     Title = "Title"
     Desc = "Description"
-    References = "References"
+    References = "\nReferences\n"
 
 def extract_query_for_category(category_name):
     f = open(category_name + '.txt', 'r')

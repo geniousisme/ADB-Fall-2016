@@ -1,8 +1,4 @@
-'''
-[TODO] Need to Deal With Duplicate url in root url set.
-'''
 from subprocess import check_output
-from Category import CategName
 
 from Util import Web
 
@@ -29,9 +25,10 @@ class ContentSummarizer(object):
         '''
         parsed_page = ""
         references_index = page.find(Web.References)
+        end = references_index if references_index > -1 else len(page)
         is_in_brackets = False
         is_space_already = False
-        for i in xrange(references_index):
+        for i in xrange(end):
             char = page[i].lower()
             if not is_in_brackets:
                 if char.isalpha():
@@ -97,7 +94,7 @@ class ContentSummarizer(object):
     def summarize(self):
         root_categ = None
         for categ in self.categ_urlset_dict:
-            if categ.name == CategName.Root:
+            if categ.is_root_categ():
                 root_categ = categ
                 continue
             self.__summarize_for_categ(categ)

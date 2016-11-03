@@ -38,11 +38,11 @@ class QProber(object):
             )
 
             print "Specificity for category:", sub_categ.name, "is", self.categ_specificity_dict[sub_categ]
-            print "Coverage for category:", sub_categ.name, "is", self.categ_coverage_dict[sub_categ]
+            print "Coverage for category:", sub_categ.name, "is", int(self.categ_coverage_dict[sub_categ])
 
             if (self.categ_specificity_dict[sub_categ] >= t_espec and 
                     self.categ_coverage_dict[sub_categ] >= t_ecov):
-                if src_categ == self.root_categ:
+                if src_categ.is_root_categ():
                     self.result_categ = Category(src_categ.name)
                     self.result_categ.sub_categs.append(
                         Category(sub_categ.name)
