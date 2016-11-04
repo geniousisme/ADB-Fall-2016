@@ -26,11 +26,18 @@ python main.py qvgP+C20TXdZWmcBz34xkB2Ud0hG34a8IFmr4OpsaPQ 0.6 100 yahoo.com
 ```
 ### d) Internal Design
 - **main.py**<br>
-    In this project, the main.py functionality is pretty simple. Basically, it calls QProber.py to do the classify, and then use the result QProber collects 
+    In this project, the main.py functionality is pretty simple. Basically, run function in main.py will QProber.py to classify, and then use the result QProber collects to build the content summary by using Content Summarizer (ContentSummarizer.py). Other functionalities include argument parser (arg_parser), helper function (helper).
 
 - **QProber.py**<br>
-    This file includes several function implementations that contain the algorithm we will explain later in part(e)
-
+    It is very obvious. This function is the implementation of QProbe classification algorithm, which is mentioned in the paper p.15 & p.9. The classificatio algorithm is as follow:<br><br>
+      ***Classify Algorithm:***<br>
+      ![classify](http://i.imgur.com/Ghqi6UL.png)
+      <br><br>
+      ***ECoverage & ESpecificity:***<br>
+      ![Imgur](http://i.imgur.com/kIgnn30.png)
+      
+      Basically, we use Bing API to get the match number for every query of one category to get the estimate coverage (ECoverage). Then, we can use the formula in the paper to calculate estimate specificity (ESpecificity). If the ecoverage & especificity is larger or equal to the target coverage and target specificity, we can declare that this web database is belong to this category. We recursively classify until we meet the leaves of categories.
+    
 - **BingSearchEngine.py**<br>
     Format the query to url format, call Bing Search API, and return the JSON format result.
 
