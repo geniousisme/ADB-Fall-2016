@@ -1,4 +1,4 @@
-## COMS 6111 - Project 2 Group 1 - QProber + Content Summart
+## COMS 6111 - Project 2 Group 1 - QProber + Content Summary
 
 ### a) Group Name & Team members:
 - Chia-Hao Hsu (ch3141)
