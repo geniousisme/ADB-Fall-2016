@@ -1,4 +1,4 @@
-## COMS 6111 - Project 2 Group 1 - QProber
+## COMS 6111 - Project 2 Group 1 - QProber + Content Summart
 
 ### a) Group Name & Team members:
 - Chia-Hao Hsu (ch3141)
@@ -22,7 +22,7 @@ python main.py <bing_key> <BING_ACCOUNT_KEY> <t_es> <t_ec> <host>
 ```
   For example:
 ```python
-python main.py 66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU 0.6 100 yahoo.com
+python main.py "66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU" 0.6 100 yahoo.com
 ```
 ### d) Internal Design
 - **main.py**<br>
