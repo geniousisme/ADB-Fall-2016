@@ -9,7 +9,7 @@ class ContentSummarizer(object):
         self.root_urlset = set()
         self.root_content_summary = {}
 
-    def __is_doc_url(self, url):
+    def __is_non_html_url(self, url):
         return (url[Web.DOC:] == ".pdf" 
                 or url[Web.DOC:] == ".ppt"
                 or url[Web.DOC:] == ".doc" 
@@ -26,23 +26,32 @@ class ContentSummarizer(object):
         parsed_page = ""
         references_index = page.find(Web.References)
         end = references_index if references_index > -1 else len(page)
-        is_in_brackets = False
-        is_space_already = False
+
+        # Follow Professor Java parser script to implement
+        parsed_page = ""
+        recording = True
+        wrotespace = False
         for i in xrange(end):
-            char = page[i].lower()
-            if not is_in_brackets:
-                if char.isalpha():
-                    parsed_page += char
-                    is_space_already = False
-                else:
-                    if char == '[':
-                        is_in_brackets = True
-                    if not is_space_already:
+            char = page[i]
+            if recording:
+                if char == '[':
+                    recording = False
+                    if not wrotespace:
                         parsed_page += ' '
-                        is_space_already = True
+                        wrotespace = True
+                    continue
+                else:
+                    if char.isalpha() and ord(char) < 128:
+                        parsed_page += char.lower()
+                        wrotespace = False
+                    else:
+                        if not wrotespace:
+                            parsed_page += ' '
+                            wrotespace = True
             else:
                 if char == ']':
-                    is_in_brackets = False
+                    recording = True
+                    continue
         return set(parsed_page.split())
 
     def __fetch_page(self, url):
@@ -51,7 +60,7 @@ class ContentSummarizer(object):
         '''
         print "Getting page:", url
 
-        if self.__is_doc_url(url):
+        if self.__is_non_html_url(url):
             print "skip\n\n"
             return set()
         try:
@@ -65,6 +74,7 @@ class ContentSummarizer(object):
             return set()
 
     def __summarize_for_categ(self, categ):
+        print "Creating Content Summary for:" + categ.name
         urlset = self.categ_urlset_dict[categ]
         urlset_len = len(urlset)
         if not categ.is_root_categ():
@@ -92,6 +102,7 @@ class ContentSummarizer(object):
         f.close()
 
     def summarize(self):
+        print "Extracting topic content summaries..."
         root_categ = None
         for categ in self.categ_urlset_dict:
             if categ.is_root_categ():
@@ -104,8 +115,4 @@ class ContentSummarizer(object):
             self.categ_urlset_dict[root_categ] - self.root_urlset
         )
         self.__summarize_for_categ(root_categ)
-
-if __name__ == "__main__":
-    cnt_sumarz = ContentSummarizer()
-    print cnt_sumarz.fetch_page('http://sports.yahoo.com/nba/players/837/')
     
