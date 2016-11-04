@@ -20,16 +20,16 @@
 ```python
 python main.py <bing_key> <BING_ACCOUNT_KEY> <t_es> <t_ec> <host>
 ```
-  Take this program to search musk with precision = 0.9 For example:
+  For example:
 ```python
-python main.py qvgP+C20TXdZWmcBz34xkB2Ud0hG34a8IFmr4OpsaPQ 0.6 100 yahoo.com
+python main.py 66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU 0.6 100 yahoo.com
 ```
 ### d) Internal Design
 - **main.py**<br>
     In this project, the main.py functionality is pretty simple. Basically, run function in main.py will QProber.py to classify, and then use the result QProber collects to build the content summary by using Content Summarizer (ContentSummarizer.py). Other functionalities include argument parser (arg_parser), helper function (helper).
 
 - **QProber.py**<br>
-    It is very obvious. This function is the implementation of QProbe classification algorithm, which is mentioned in the paper p.15 & p.9. The classificatio algorithm is as follow:<br><br>
+    This function is the implementation of QProbe classification algorithm, which is mentioned in the paper p.15 & p.9. The classificatio algorithm is as follow:<br><br>
       ***Classify Algorithm:***<br>
       ![classify](http://i.imgur.com/Ghqi6UL.png)
       <br><br>
