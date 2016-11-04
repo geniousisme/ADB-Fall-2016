@@ -1,3 +1,5 @@
+from requests import head
+
 from subprocess import check_output
 
 from Util import Web
@@ -10,11 +12,8 @@ class ContentSummarizer(object):
         self.root_content_summary = {}
 
     def __is_non_html_url(self, url):
-        return (url[Web.DOC:] == ".pdf" 
-                or url[Web.DOC:] == ".ppt"
-                or url[Web.DOC:] == ".doc" 
-                or url[Web.XDOC:] == ".pptx" 
-                or url[Web.XDOC:] == ".docx")
+        r = head(url)
+        return "text/html" not in r.headers["content-type"]
     
     def __page_parser(self, page):
         '''Return set of words

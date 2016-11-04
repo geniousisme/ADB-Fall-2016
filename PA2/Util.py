@@ -27,6 +27,5 @@ def extract_query_for_category(category_name):
     f.close()
     return category_query_dict
 
-
 if __name__ == "__main__":
     print extract_query_for_category("Root")
