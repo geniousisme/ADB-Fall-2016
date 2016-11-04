@@ -46,10 +46,15 @@ python main.py 66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU 0.6 100 yahoo.com
     1) summarize: calls summarize_for_categ for each subcategory <br>
     2) summarize_for_categ: calculate the word document frequency for each category <br>
     3) fetch_page: Return set of words from the url page and fetch page through lynx <br>
-    4) page_parser: parse each html page and extract words we are interested <br>
+    4) page_parser: parse each html page with the approach mentioned in proj2 description, which includes three requirements:<br>
+          - Any part of the text after the "References" line should be ignored.<br>
+          - Also any text within brackets "[....]" should be ignored.<br>
+          - Any character not in the English alphabet should be treated as a word separator, and the words are case-insensitive.<br>
+
+    We avoid the visiting the same url by eliminating those urls from root urls set. However, we collect the word document frequency in another dictionary and assign the dictionary to Root when we need the calculate word document frequency for Root.
 
 - **Category.py**<br>
-    Category class for category objects. We also implemented basic object operation methods such as building subcategories and show classification infomation. 
+    Category class for category objects. We also implemented basic object operation methods such as showing classification infomation, or checking category is root or not. 
 
 - **Utils.py**<br>
     Utility function to extract queries regarding to each category into a dictionary.
