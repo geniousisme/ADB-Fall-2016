@@ -39,24 +39,21 @@ python main.py qvgP+C20TXdZWmcBz34xkB2Ud0hG34a8IFmr4OpsaPQ 0.6 100 yahoo.com
       Basically, we use Bing API to get the match number for every query of one category to get the estimate coverage (ECoverage). Then, we can use the formula in the paper to calculate estimate specificity (ESpecificity). If the ecoverage & especificity is larger or equal to the target coverage and target specificity, we can declare that this web database is belong to this category. We recursively classify until we meet the leaves of categories.
     
 - **BingSearchEngine.py**<br>
-    Format the query to url format, call Bing Search API, and return the JSON format result.
+    Return the match number for every query under the category, and collect top 4 urls for each query of the category for content summary.
 
 - **ContentSummarizer.py**<br>
-    Implement several computation functions for vectors, like dot product, sum up two vectors, minus two vectors.
+    There are four parts in the content summarizer 
 
 - **Category.py**<br>
-    Define several constants, which we don't want user or even developer easily to change.
 
 - **Utils.py**<br>
-    Includes stop word list and special character list, which I will use to remove stop words & special characters from the input document.     Also, we include some utility function, like replace_non_ascii_with_space, replace_special_chars, in this file, and the error class we     define by ourselves.
     
 - **Root.txt, Health.txt, Computers.txt, Sports.txt**<br>
-    Includes stop word list and special character list, which I will use to remove stop words & special characters from the input document.     Also, we include some utility function, like replace_non_ascii_with_space, replace_special_chars, in this file, and the error class we     define by ourselves.
 
 ### e) Your Bing Search Account Key
     key: 66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU
+
 ### f) Any additional information that you consider significant 
-We also try title enhancement for our case, but the result doesn't improve too much in the end, sometimes it makes the result even worse since there are some words that will make the result become weird. Take "taj mahel" as example. If we do the title enhancement, then the augmented words the algorithm will pick will be "video" & "streaming" since these two words are in the title of the relevant results.
 
 ### Reference:
 QProber: A System for Automatic Classification of Hidden-Web Databases http://www.cs.columbia.edu/~gravano/Papers/2003/tois03.pdf
