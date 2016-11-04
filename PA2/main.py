@@ -36,12 +36,22 @@ class MainFunction(object):
             return bing_key, target_especificity, target_ecoverage, host
 
     def run(self):
-        bing_key, t_es, t_ec, host = self.arg_parser(sys.argv)
-        self.qprober.probe(bing_key, t_es, t_ec, host)
-        self.cnt_summr = ContentSummarizer(
-            self.qprober.bse.categ_urls_dict, host
-        )
-        self.cnt_summr.summarize()
+        try:
+            bing_key, t_es, t_ec, host = self.arg_parser(sys.argv)
+            self.qprober.probe(bing_key, t_es, t_ec, host)
+            self.cnt_summr = ContentSummarizer(
+                self.qprober.bse.categ_urls_dict, host
+            )
+            self.cnt_summr.summarize()
+
+        except KeyboardInterrupt:
+            print "\n\n\n"
+            print "+------------------------------------+"
+            print "|      Leaving Proj2 Program....     |"
+            print "+------------------------------------+"
+            print "Bye ~"
+            sys.exit(1)
+
         
 if __name__ == "__main__":
     main = MainFunction()
