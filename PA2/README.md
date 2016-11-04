@@ -42,11 +42,11 @@ python main.py 66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU 0.6 100 yahoo.com
     Return the match number for every query under the category, and collect top 4 urls for each query of the category for content summary.
 
 - **ContentSummarizer.py**<br>
-    There are four parts in the content summarizer. 
-    1) summarize: calls summarize_for_categ for each subcategory
-    2) summarize_for_categ: calculate the word document frequency for each category
-    3) fetch_page: Return set of words from the url page and fetch page through lynx
-    4) page_parser: parse each html page and extract words we are interested.
+    There are four parts in the content summarizer. <br>
+    1) summarize: calls summarize_for_categ for each subcategory <br>
+    2) summarize_for_categ: calculate the word document frequency for each category <br>
+    3) fetch_page: Return set of words from the url page and fetch page through lynx <br>
+    4) page_parser: parse each html page and extract words we are interested <br>
 
 - **Category.py**<br>
     Category class for category objects. We also implemented basic object operation methods such as building subcategories and show classification infomation. 
@@ -59,8 +59,6 @@ python main.py 66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU 0.6 100 yahoo.com
 
 ### e) Your Bing Search Account Key
     key: 66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU
-
-### f) Any additional information that you consider significant 
 
 ### Reference:
 QProber: A System for Automatic Classification of Hidden-Web Databases http://www.cs.columbia.edu/~gravano/Papers/2003/tois03.pdf
