@@ -21,7 +21,7 @@ class ContentSummarizer(object):
         1. Any part of the text after the "References" line should be ignored.
         2. Also any text within brackets "[....]" should be ignored.
         3. Any character not in the English alphabet should be
-            treated as a word separator, and the words are case-insensitive.
+            treated as a word separator, and the words are not case-sensitive.
         '''
         parsed_page = ""
         references_index = page.find(Web.References)
