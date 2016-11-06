@@ -3,8 +3,6 @@ import json
 import pprint
 import urllib2
 
-from Category import CategName
-
 from collections import defaultdict
 
 class BingSearchEngine(object):

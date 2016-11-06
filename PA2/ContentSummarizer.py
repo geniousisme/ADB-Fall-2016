@@ -2,7 +2,7 @@ from requests import head
 
 from subprocess import check_output
 
-from Util import Web
+from Util import References
 
 class ContentSummarizer(object):
     def __init__(self, categ_urlset_dict, host):
@@ -23,7 +23,7 @@ class ContentSummarizer(object):
             treated as a word separator, and the words are not case-sensitive.
         '''
         parsed_page = ""
-        references_index = page.find(Web.References)
+        references_index = page.find(References)
         end = references_index if references_index > -1 else len(page)
 
         # Follow Professor Java parser script to implement
@@ -95,7 +95,7 @@ class ContentSummarizer(object):
             url_count += 1
 
         # Record the word doc freq into the file
-        f = open(categ.name + '-' + self.host + '.txt', 'w')
+        f = open('ContentSummary/' + categ.name + '-' + self.host + '.txt', 'w')
         for word, freq in sorted(content_summary.items()):
             f.write(word + '#' + str(freq) + '\n')
         f.close()

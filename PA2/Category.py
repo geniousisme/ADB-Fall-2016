@@ -1,12 +1,24 @@
-from enum import Enum
-
 from Util import extract_query_for_category
 
-class CategName(Enum):
-    Root = "Root"
-    Health = "Health"
-    Sports = "Sports"
-    Computers = "Computers"
+Root = "Root"
+
+class CategDict(dict):    
+    def __init__(self):
+        self.categs = []
+
+    def __str__(self):
+        return str(self.categs)
+
+    def __iter__(self):
+        return iter(self.categs)
+
+    def __getitem__(self, key_categ):
+        print key_categ
+        return self[key_categ.name]
+    
+    def append(self, categ):
+        self[categ.name] = categ
+        self.categs.append(categ)
 
 class Category(object):
     def __init__(self, categ_name):
@@ -31,7 +43,7 @@ class Category(object):
         return None
 
     def is_root_categ(self):
-        return self.name == CategName.Root
+        return self.name == Root
 
     def show(self):
         print self
@@ -65,7 +77,7 @@ def build_category(source_categ):
         source_categ.sub_categs.append(new_categ)
 
 def init_categories():
-    root_categ = Category(CategName.Root)
+    root_categ = Category(Root)
     build_category(root_categ)
     for categ in root_categ.sub_categs:
         build_category(categ)
