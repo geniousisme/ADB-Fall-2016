@@ -59,7 +59,7 @@ python main.py "66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU" 0.6 100 yahoo.com
 - **Utils.py**<br>
     Utility function to extract queries regarding to each category into a dictionary.
     
-- **Root.txt, Health.txt, Computers.txt, Sports.txt**<br>
+- **Category/ Root.txt, Health.txt, Computers.txt, Sports.txt**<br>
     Text files which stores category and its corresponding queries. 
 
 ### e) Your Bing Search Account Key
