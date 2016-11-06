@@ -2,24 +2,6 @@ from Util import extract_query_for_category
 
 Root = "Root"
 
-class CategDict(dict):    
-    def __init__(self):
-        self.categs = []
-
-    def __str__(self):
-        return str(self.categs)
-
-    def __iter__(self):
-        return iter(self.categs)
-
-    def __getitem__(self, key_categ):
-        print key_categ
-        return self[key_categ.name]
-    
-    def append(self, categ):
-        self[categ.name] = categ
-        self.categs.append(categ)
-
 class Category(object):
     def __init__(self, categ_name):
         self.name = categ_name
