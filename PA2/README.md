@@ -51,7 +51,7 @@ python main.py "66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU" 0.6 100 yahoo.com
           - Also any text within brackets "[....]" should be ignored.<br>
           - Any character not in the English alphabet should be treated as a word separator, and the words are case-insensitive.<br>
 
-    We avoid the visiting the same url by eliminating those urls from root urls set. However, we collect the word document frequency in another dictionary and assign the dictionary to Root when we need the calculate word document frequency for Root.
+    We avoid the visiting the same url by eliminating those urls from root urls set. However, we collect the word document frequency in another dictionary and assign the dictionary to Root when we need the calculate word document frequency for Root. Last but not the least, since we think that generating so many txt files under same directory is very bothering, our code will put all the summary txt file under ContentSummary directory. Our code will generate the directory if the directory doesn't exist yet.
 
 - **Category.py**<br>
     Category class for category objects. We also implemented basic object operation methods such as showing classification infomation, or checking category is root or not. 
