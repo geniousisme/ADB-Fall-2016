@@ -1,3 +1,5 @@
+import os
+
 from requests import head
 from subprocess import check_output
 
@@ -94,6 +96,8 @@ class ContentSummarizer(object):
             url_count += 1
 
         # Record the word doc freq into the file
+        if not os.path.exists('ContentSummary/'):
+            os.makedirs('ContentSummary/')
         f = open('ContentSummary/' + categ.name + '-' + self.host + '.txt', 'w')
         for word, freq in sorted(content_summary.items()):
             f.write(word + '#' + str(freq) + '\n')
