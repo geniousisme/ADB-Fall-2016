@@ -65,5 +65,8 @@ python main.py "66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU" 0.6 100 yahoo.com
 ### e) Your Bing Search Account Key
     key: 66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU
 
+### f) Additional Information
+We didn't implement the multi-word entries part. The performance of classificaiton is the same as reference. However, content summary are slightly differet due to different factors. In our implementation, if the url header shows that it is not text/html file, we just skip the url. Nevertheless, the word frequency is still quite simialr with reference implementation.
+
 ### Reference:
 QProber: A System for Automatic Classification of Hidden-Web Databases http://www.cs.columbia.edu/~gravano/Papers/2003/tois03.pdf

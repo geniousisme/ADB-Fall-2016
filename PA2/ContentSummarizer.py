@@ -1,5 +1,4 @@
 from requests import head
-
 from subprocess import check_output
 
 from Util import References
