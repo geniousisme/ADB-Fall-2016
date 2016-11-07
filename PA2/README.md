@@ -22,7 +22,7 @@ python main.py <bing_key> <BING_ACCOUNT_KEY> <t_es> <t_ec> <host>
 ```
   For example:
 ```python
-python main.py "66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU" 0.6 100 yahoo.com
+python main.py "qnzL24mByMb1F3UEkjdVaWb8FN9Vh8FG79P04+LKoTQ" 0.6 100 yahoo.com
 ```
 ### d) Internal Design
 - **main.py**<br>
@@ -63,7 +63,7 @@ python main.py "66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU" 0.6 100 yahoo.com
     Text files which stores category and its corresponding queries. 
 
 ### e) Your Bing Search Account Key
-    key: 66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU
+    key: qnzL24mByMb1F3UEkjdVaWb8FN9Vh8FG79P04+LKoTQ
 
 ### f) Additional Information
 We didn't implement the multi-word entries part. The performance of classificaiton is the same as reference. However, content summary are slightly differet due to different factors. In our implementation, if the url header shows that it is not text/html file, we just skip the url. Nevertheless, the word frequency is still quite simialr with reference implementation.
