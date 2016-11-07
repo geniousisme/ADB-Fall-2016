@@ -11,10 +11,11 @@
 - QProber.py
 - Util.py
 - main.py
-- Root.txt
-- Sports.txt
-- Health.txt
-- Computers.txt
+- Category/
+  - Root.txt
+  - Sports.txt
+  - Health.txt
+  - Computers.txt
 
 ### c) how to run this program
 ```python
