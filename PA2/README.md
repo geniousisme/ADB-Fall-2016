@@ -1,6 +1,7 @@
 ## COMS 6111 - Project 2 Group 1 - QProber + Content Summary
 
-Please check https://github.com/geniousisme/ADB-Fall-2016/blob/master/PA2/README.md to see the online version.
+Please check https://github.com/geniousisme/ADB-Fall-2016/blob/master/PA2/README.md to see the online version. There are some format problems in PDF file.
+
 
 ### a) Group Name & Team members:
 - Chia-Hao Hsu (ch3141)
