@@ -1,5 +1,8 @@
 ## COMS 6111 - Project 2 Group 1 - QProber + Content Summary
 
+Please check https://github.com/geniousisme/ADB-Fall-2016/blob/master/PA2/README.md to see the online version. There are some format problems in PDF file.
+
+
 ### a) Group Name & Team members:
 - Chia-Hao Hsu (ch3141)
 - Yu Wang (yw2783)
@@ -11,10 +14,11 @@
 - QProber.py
 - Util.py
 - main.py
-- Root.txt
-- Sports.txt
-- Health.txt
-- Computers.txt
+- Category/
+  - Root.txt
+  - Sports.txt
+  - Health.txt
+  - Computers.txt
 
 ### c) how to run this program
 ```python
@@ -22,7 +26,7 @@ python main.py <bing_key> <BING_ACCOUNT_KEY> <t_es> <t_ec> <host>
 ```
   For example:
 ```python
-python main.py "66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU" 0.6 100 yahoo.com
+python main.py "qnzL24mByMb1F3UEkjdVaWb8FN9Vh8FG79P04+LKoTQ" 0.6 100 yahoo.com
 ```
 ### d) Internal Design
 - **main.py**<br>
@@ -51,7 +55,7 @@ python main.py "66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU" 0.6 100 yahoo.com
           - Also any text within brackets "[....]" should be ignored.<br>
           - Any character not in the English alphabet should be treated as a word separator, and the words are case-insensitive.<br>
 
-    We avoid the visiting the same url by eliminating those urls from root urls set. However, we collect the word document frequency in another dictionary and assign the dictionary to Root when we need the calculate word document frequency for Root.
+    We avoid the visiting the same url by eliminating those urls from root urls set. However, we collect the word document frequency in another dictionary and assign the dictionary to Root when we need the calculate word document frequency for Root. Last but not the least, since we think that generating so many txt files under same directory is very bothering, our code will put all the summary txt file under ContentSummary directory. Our code will generate the directory if the directory doesn't exist yet.
 
 - **Category.py**<br>
     Category class for category objects. We also implemented basic object operation methods such as showing classification infomation, or checking category is root or not. 
@@ -59,11 +63,11 @@ python main.py "66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU" 0.6 100 yahoo.com
 - **Utils.py**<br>
     Utility function to extract queries regarding to each category into a dictionary.
     
-- **Root.txt, Health.txt, Computers.txt, Sports.txt**<br>
+- **Category/ Root.txt, Health.txt, Computers.txt, Sports.txt**<br>
     Text files which stores category and its corresponding queries. 
 
 ### e) Your Bing Search Account Key
-    key: 66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU
+    key: qnzL24mByMb1F3UEkjdVaWb8FN9Vh8FG79P04+LKoTQ
 
 ### f) Additional Information
 We didn't implement the multi-word entries part. The performance of classificaiton is the same as reference. However, content summary are slightly differet due to different factors. In our implementation, if the url header shows that it is not text/html file, we just skip the url. Nevertheless, the word frequency is still quite simialr with reference implementation.
