@@ -2,6 +2,7 @@
 *.py[cod]
 *.swp
 *.pdf
+*.csv
 .DS_Store
 reference/*
 *_copy.py
