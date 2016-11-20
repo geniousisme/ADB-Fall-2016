@@ -1,7 +1,7 @@
 import csv
 import re
 
-def get_candidates(filename):
+def get_transactions(filename):
     with open(filename, 'r') as csvfile:
         csv_reader = csv.reader(csvfile, delimiter=',')
         result = []
