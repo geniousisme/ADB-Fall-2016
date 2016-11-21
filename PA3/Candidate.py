@@ -37,42 +37,16 @@ class Candidate(object):
         return "Candidate: " + str(self.candidates)
 
     def __setitem__(self, key, val):
-        try:
-            if not isinstance(key, set):
-                raise KeyMustBeSetError
-            self.candidates[str(key)] = val
-
-        except KeyMustBeSetError as e:
-            print e.message
+        self.method_interface(SETITEM, key, val)
 
     def __getitem__(self, key):
-        try:
-            if not isinstance(key, set):
-                raise KeyMustBeSetError
-            return self.candidates[str(key)]
-
-        except KeyMustBeSetError as e:
-            print e.message
+        self.method_interface(GETITEM, key)
 
     def __delitem__(self, key):
-        try:
-            if not isinstance(key, set):
-                raise KeyMustBeSetError
-            del self.candidates[str(key)]
-
-        except KeyMustBeSetError as e:
-            print e.message
+        self.method_interface(DELITEM, key)
 
     def get(self, key, default=0):
-        try:
-            return self.candidates[str(key)]
-
-        except KeyMustBeSetError as e:
-            print e.message
-
-        except KeyError as e:
-            self.candidates[str(key)] = default
-            return default
+        return self.method_interface(GET, key, default)
 
     def get_itemset(self, key):
         try:
@@ -87,32 +61,34 @@ class Candidate(object):
 
     def method_interface(self, method_name, key, val=0.0):
         try:
-            if not isinstance(key, set):
-                raise KeyMustBeSetError
+            if not isinstance(key, tuple):
+                if not isinstance(key, set):
+                    if not isinstance(key, list):
+                        key = [key]
+                    key = set(key)
+                key = tuple(key)
 
             if method_name == SETITEM:
-                self.candidates[str(key)] = val
+                self.candidates[key] = val
 
             elif method_name == GETITEM:
-                return self.candidates[str(key)]
+                return self.candidates[key]
 
             elif method_name == DELITEM:
-                del self.candidates[str(key)]
+                del self.candidates[key]
 
             elif method_name == GET:
-                return self.candidates[str(key)]                
+                return self.candidates[key]  
 
         except KeyMustBeSetError as e:
             print e.message
 
         except KeyError as e:
             if method_name == GET:
-                self.candidates[str(key)] = default
-                return default
+                self.candidates[key] = val
+                return val
             else:
-                print e.message
-
-
+                print e
 
     def append_itemset(itemset):
         self.candidates[str(itemset.set)] = itemset.supp
@@ -121,4 +97,5 @@ if __name__ == "__main__":
     from Candidate import ItemSet, Candidate
     ct = Candidate()
     ct[set([1, 2, 3])] = 1
+    print ct.get(set([1,2]))
 
