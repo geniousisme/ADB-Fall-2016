@@ -27,6 +27,12 @@ class Candidate(object):
     def __init__(self):
         self.candidates = OrderedDict()
 
+    def __len__(self):
+        return len(self.candidates)
+
+    def __nonzero__(self):
+        return len(self.candidates) != 0
+
     def __iter__(self):
         return iter(self.candidates)
     

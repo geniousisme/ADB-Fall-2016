@@ -13,7 +13,7 @@ def get_transactions(filename):
                 item = replace_non_ascii_with_space(item)
                 item = item.strip('\n').strip('\r')
                 row_result.append(item)
-            result.append(row_result)
+            result.append(set(row_result))
     return result
 
 def replace_non_ascii_with_space(input_doc):

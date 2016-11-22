@@ -4,15 +4,22 @@ from Candidate import Candidate, ItemSet
 from Util import get_transactions, get_subsets
 
 class AssocRulesExtractor(object):
+    '''
+    Implementation of Apriori Algo, in paper
+    "Fast Algorithms for Mining Association Rules"
+    Rakesh Agrawal, Ramakrishnan Srikant
+    IBM Almaden Research Center
+    '''
     def __init__(self, filename, min_supp, min_conf):
         self.filename = filename
         self.min_supp = min_supp
         self.min_conf = min_conf
         self.total_trans = 0
         self.transactions = []
+        self.L1_len = 0
 
     def get_L1_itemset(self):
-        l1_itemset = Candidate()
+        L1_itemset = Candidate()
         self.transactions = get_transactions(self.filename)
         self.total_trans = len(self.transactions)
         
@@ -20,48 +27,69 @@ class AssocRulesExtractor(object):
             for item in trans:
                 if not item:
                     continue
-                l1_itemset[item] = (
-                    l1_itemset.get(item) + 1.0 / self.total_trans
+                L1_itemset[item] = (
+                    L1_itemset.get(item) + 1.0 / self.total_trans
                 )
-        l1_itemset_result = []
-        for itemset in l1_itemset:
-            if l1_itemset.get(itemset) >= self.min_supp:
-                l1_itemset_result.append(itemset)
-        return set(l1_itemset_result)
+        L1_itemset_result = []
+        for itemset in L1_itemset:
+            if L1_itemset.get(itemset) >= self.min_supp:
+                L1_itemset_result.append(itemset)
+        self.L1_len = len(L1_itemset_result)
+        return set(L1_itemset_result)
 
-    def apriori_gen(self, L_k_1_itemset):
+    def apriori_gen(self, Lk_1_itemset):
         '''
         Take Section 2.1.1 - Apriori Candidate Generation 
         as reference to implement, there are two steps: join & prune
         '''
 
         '''
-        join step, 2.1.1, p3
+        join step, sec 2.1.1, p3
         '''
-        L_k_1_itemset_list = list(L_k_1_itemset)
+        Lk_1_itemset_list = list(Lk_1_itemset)
         candidates_k = []
-        for i in xrange(len(L_k_1_itemset_list)):
-            for j in xrange(i + 1, len(L_k_1_itemset_list)):
-                if L_k_1_itemset_list[i][:-1] == L_k_1_itemset_list[j][:-1]:
-                    tmp_candidate = list(L_k_1_itemset_list[i][:])
-                    tmp_candidate.append(L_k_1_itemset_list[j][-1])
+        for i in xrange(len(Lk_1_itemset_list)):
+            for j in xrange(i + 1, len(Lk_1_itemset_list)):
+                if Lk_1_itemset_list[i][:-1] == Lk_1_itemset_list[j][:-1]:
+                    tmp_candidate = list(Lk_1_itemset_list[i][:])
+                    tmp_candidate.append(Lk_1_itemset_list[j][-1])
                     candidates_k.append(set(tmp_candidate))
         '''
-        prune step, 2.1.1, p4
+        prune step, sec 2.1.1, p4
         '''
         for candidate in candidates_k:
             k_1_subsets = get_subsets(candidate)
             for subset in k_1_subsets:
-                if subset not in L_k_1_itemset:
+                if subset not in Lk_1_itemset:
                     candidates_k.remove(candidate)
 
         return candidates_k
 
+    def subset(self, candidates, transactions):
+        Ct_itemset = Candidate()
+        for trans in transactions:
+            for candidate in candidates:
+                if candidate.issubset(trans):
+                    Ct_itemset[candidate] = (
+                        Ct_itemset.get(candidate) + 1.0 / self.total_trans
+                    )
+        return Ct_itemset
+
     def apriori(self):
-        L_k_1_itemset = self.get_L1_itemset()
-        while L_k_1_itemset:
-            candidates_k = self.apriori_gen(L_k_1_itemset)
-                
+        '''
+        Apriori Algo - p3 - Fig.1
+        '''
+        Lk_itemset = self.get_L1_itemset()
+        idx = 0
+        while Lk_itemset and idx < self.L1_len:
+            candidates_k = self.apriori_gen(Lk_itemset)
+            Ct_itemset = self.subset(candidates_k, self.transactions)
+            for ct_candidate in Ct_itemset:
+                if Ct_itemset.get(ct_candidate) < self.min_supp:
+                    del Ct_itemset[ct_candidate]
+            Lk_itemset = Ct_itemset
+            print "Lk_itemset:", Lk_itemset
+            idx += 1
             
     def run(self):
         self.apriori()
