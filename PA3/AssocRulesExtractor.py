@@ -47,13 +47,15 @@ class AssocRulesExtractor(object):
         join step, sec 2.1.1, p3
         '''
         Lk_1_itemset_list = list(Lk_1_itemset)
-        candidates_k = []
+        candidates_k = Candidate()
         for i in xrange(len(Lk_1_itemset_list)):
             for j in xrange(i + 1, len(Lk_1_itemset_list)):
                 if Lk_1_itemset_list[i][:-1] == Lk_1_itemset_list[j][:-1]:
-                    tmp_candidate = list(Lk_1_itemset_list[i][:])
-                    tmp_candidate.append(Lk_1_itemset_list[j][-1])
-                    candidates_k.append(set(tmp_candidate))
+                    tmp_candidate_list = (
+                        list(Lk_1_itemset_list[i][:])
+                        + [Lk_1_itemset_list[j][-1]]
+                    )
+                    candidates_k.append(tmp_candidate_list)
         '''
         prune step, sec 2.1.1, p4
         '''
@@ -69,7 +71,7 @@ class AssocRulesExtractor(object):
         Ct_itemset = Candidate()
         for trans in transactions:
             for candidate in candidates:
-                if candidate.issubset(trans):
+                if set(candidate).issubset(trans):
                     Ct_itemset[candidate] = (
                         Ct_itemset.get(candidate) + 1.0 / self.total_trans
                     )
@@ -88,7 +90,6 @@ class AssocRulesExtractor(object):
                 if Ct_itemset.get(ct_candidate) < self.min_supp:
                     del Ct_itemset[ct_candidate]
             Lk_itemset = Ct_itemset
-            print "Lk_itemset:", Lk_itemset
             idx += 1
             
     def run(self):

@@ -4,10 +4,16 @@ SETITEM = "setitem"
 GETITEM = "getitem"
 DELITEM = "delitem"
 GET = "get"
+APPEND = "append"
+
 
 class KeyMustBeSetError(Exception):
     def __init__(self):
         self.message = "The key must be set object!"
+
+class CantAppendError(Exception):
+    def __init__(self):
+        self.message = "The key already exist!"
 
 class ItemSet(object):
     def __init__(self, set=set(), supp=0.0):
@@ -20,11 +26,14 @@ class ItemSet(object):
     def __repr__(self):
         return "<ItemSet: " + str(self.set) + ">"
 
+    def __index__(self):
+        return tuple(self.set)
+
     def __str__(self):
         return  "itemSet: " + str(self.set) 
 
 class Candidate(object):
-    def __init__(self):
+    def __init__(self, key=None, val=0.0):
         self.candidates = OrderedDict()
 
     def __len__(self):
@@ -54,6 +63,10 @@ class Candidate(object):
     def get(self, key, default=0):
         return self.method_interface(GET, key, default)
 
+    def append(self, key):
+        self.method_interface(APPEND, key)
+        # self.candidates[str(itemset.set)] = itemset.supp
+
     def get_itemset(self, key):
         try:
             if not isinstance(key, set):
@@ -72,7 +85,7 @@ class Candidate(object):
                     if not isinstance(key, list):
                         key = [key]
                     key = set(key)
-                key = tuple(key)
+                key = tuple(sorted(key))
 
             if method_name == SETITEM:
                 self.candidates[key] = val
@@ -84,9 +97,18 @@ class Candidate(object):
                 del self.candidates[key]
 
             elif method_name == GET:
-                return self.candidates[key]  
+                return self.candidates[key]
+
+            elif method_name == APPEND:
+                if self.candidates.get(key) is None:
+                    self.candidates[key] = val
+                else:
+                    raise CantAppendError
 
         except KeyMustBeSetError as e:
+            print e.message
+
+        except CantAppendError as e:
             print e.message
 
         except KeyError as e:
@@ -96,8 +118,6 @@ class Candidate(object):
             else:
                 print e
 
-    def append_itemset(itemset):
-        self.candidates[str(itemset.set)] = itemset.supp
 
 if __name__ == "__main__":
     from Candidate import ItemSet, Candidate
