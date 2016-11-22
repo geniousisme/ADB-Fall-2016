@@ -1,7 +1,8 @@
 from collections import defaultdict
 
 from BingSearchEngine import BingSearchEngine
-from Category import CategName, Category, init_categories
+from Category import Category, init_categories
+from Category import Root
 
 class QProber(object):
 

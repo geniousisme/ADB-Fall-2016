@@ -1,7 +1,4 @@
-
-# For server side
-/home/gravano/6111/Html/Proj2/bin/run.sh qvgP+C20TXdZWmcBz34xkB2Ud0hG34a8IFmr4OpsaPQ 0.6 100 yahoo.com
-
-
 # For local side
-python main.py qvgP+C20TXdZWmcBz34xkB2Ud0hG34a8IFmr4OpsaPQ 0.6 100 yahoo.com
+python main.py 66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU 0.6 100 yahoo.com
+python main.py 66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU 0.6 100 fifa.com
+python main.py 66VZ/0vWWypKpW7Okf53vtYWsni12Mo9a1dua43bKnU 0.6 100 diabetes.org
