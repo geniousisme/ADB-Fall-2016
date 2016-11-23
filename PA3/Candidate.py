@@ -16,21 +16,39 @@ class CantAppendError(Exception):
         self.message = "The key already exist!"
 
 class ItemSet(object):
-    def __init__(self, set=set(), supp=0.0):
-        self.set = set
-        self.supp = supp
+    def __init__(self, val=set()):
+        if not isinstance(val, set):
+            if not isinstance(val, list):
+                val = [val]
+            val = set(val)
+        self.val = val
 
     def __eq__(self, other):
-        return self.set == other.set 
+        if isinstance(other, tuple):
+            return self.val == set(other)
+
+        if isinstance(other, set):
+            return self.val == other
+
+        return self.val == other.val
 
     def __repr__(self):
-        return "<ItemSet: " + str(self.set) + ">"
-
-    def __index__(self):
-        return tuple(self.set)
+        return "<ItemSet: " + str(self.val) + ">"
 
     def __str__(self):
-        return  "itemSet: " + str(self.set) 
+        return  "itemSet: " + str(self.val)
+
+    def __hash__(self):
+        return hash(tuple(sorted(self.val)))
+
+    def __len__(self):
+        return len(self.val)
+
+    def __getitem__(self, key):
+        return tuple(sorted(self.val))[key]
+
+    def __index__(self):
+        return tuple(sorted(self.val))
 
 class Candidate(object):
     def __init__(self, key=None, val=0.0):
@@ -55,7 +73,7 @@ class Candidate(object):
         self.method_interface(SETITEM, key, val)
 
     def __getitem__(self, key):
-        self.method_interface(GETITEM, key)
+        return self.method_interface(GETITEM, key)
 
     def __delitem__(self, key):
         self.method_interface(DELITEM, key)
@@ -80,12 +98,8 @@ class Candidate(object):
 
     def method_interface(self, method_name, key, val=0.0):
         try:
-            if not isinstance(key, tuple):
-                if not isinstance(key, set):
-                    if not isinstance(key, list):
-                        key = [key]
-                    key = set(key)
-                key = tuple(sorted(key))
+            if not isinstance(key, ItemSet):
+                key = ItemSet(key)
 
             if method_name == SETITEM:
                 self.candidates[key] = val
@@ -118,10 +132,12 @@ class Candidate(object):
             else:
                 print e
 
-
 if __name__ == "__main__":
     from Candidate import ItemSet, Candidate
     ct = Candidate()
+    it1 = ItemSet(1)
+    ct[it1] = 1
+    ct[ItemSet(1)] = 2
     ct[set([1, 2, 3])] = 1
     print ct.get(set([1,2]))
 
