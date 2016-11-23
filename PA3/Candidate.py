@@ -49,6 +49,11 @@ class ItemSet(object):
     def __index__(self):
         return self.val
 
+    def is_subset_of(self, target):
+        if not isinstance(target, set):
+            target = set(target)
+        return set(self).issubset(target)
+
 class Candidate(object):
     def __init__(self, key=None, val=0.0):
         self.candidates = OrderedDict()

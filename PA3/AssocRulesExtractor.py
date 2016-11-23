@@ -46,7 +46,7 @@ class AssocRulesExtractor(object):
         join step, sec 2.1.1, p3
         '''
         Lk_1_itemset_list = list(Lk_1_itemset)
-        candidates_k = Candidate()
+        candidate_k = Candidate()
         for i in xrange(len(Lk_1_itemset_list)):
             for j in xrange(i + 1, len(Lk_1_itemset_list)):
                 if Lk_1_itemset_list[i][:-1] == Lk_1_itemset_list[j][:-1]:
@@ -54,25 +54,25 @@ class AssocRulesExtractor(object):
                         list(Lk_1_itemset_list[i][:])
                         + [Lk_1_itemset_list[j][-1]]
                     )
-                    candidates_k.append(tmp_candidate_list)
+                    candidate_k.append(tmp_candidate_list)
         '''
         prune step, sec 2.1.1, p4
         '''
-        for itemset in candidates_k:
+        for itemset in candidate_k:
             k_1_subsets = get_subsets(itemset)
             for subset in k_1_subsets:
                 if subset not in Lk_1_itemset:
-                    del candidates_k[itemset]
+                    del candidate_k[itemset]
 
-        return candidates_k
+        return candidate_k
 
-    def subset(self, candidates, transactions):
+    def subset(self, candidate, transactions):
         Ct_itemset = Candidate()
         for trans in transactions:
-            for candidate in candidates:
-                if set(candidate).issubset(trans):
-                    Ct_itemset[candidate] = (
-                        Ct_itemset.get(candidate) + 1.0 / self.total_trans
+            for itemset in candidate:
+                if itemset.is_subset_of(trans):
+                    Ct_itemset[itemset] = (
+                        Ct_itemset.get(itemset) + 1.0 / self.total_trans
                     )
         return Ct_itemset
 
@@ -83,8 +83,8 @@ class AssocRulesExtractor(object):
         Lk_itemset = self.get_L1_itemset()
         idx = 0
         while Lk_itemset and idx < self.L1_len:
-            candidates_k = self.apriori_gen(Lk_itemset)
-            Ct_itemset = self.subset(candidates_k, self.transactions)
+            candidate_k = self.apriori_gen(Lk_itemset)
+            Ct_itemset = self.subset(candidate_k, self.transactions)
             for ct_candidate in Ct_itemset:
                 if Ct_itemset.get(ct_candidate) < self.min_supp:
                     del Ct_itemset[ct_candidate]
