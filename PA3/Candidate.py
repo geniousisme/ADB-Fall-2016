@@ -1,4 +1,8 @@
+import sys
+
 from collections import OrderedDict
+
+from Error import KeyMustBeSetError, CantAppendError
 
 SETITEM = "setitem"
 GETITEM = "getitem"
@@ -6,29 +10,24 @@ DELITEM = "delitem"
 GET = "get"
 APPEND = "append"
 
-
-class KeyMustBeSetError(Exception):
-    def __init__(self):
-        self.message = "The key must be set object!"
-
-class CantAppendError(Exception):
-    def __init__(self):
-        self.message = "The key already exist!"
-
 class ItemSet(object):
     def __init__(self, val=set()):
         if not isinstance(val, set):
             if not isinstance(val, list):
                 val = [val]
             val = set(val)
+        val = tuple(sorted(val))
         self.val = val
 
     def __eq__(self, other):
         if isinstance(other, tuple):
-            return self.val == set(other)
+            return self.val == other
 
         if isinstance(other, set):
-            return self.val == other
+            return self.val == tuple(other)
+
+        if isinstance(other, list):
+            return self.val == tuple(other)
 
         return self.val == other.val
 
@@ -39,16 +38,16 @@ class ItemSet(object):
         return  "itemSet: " + str(self.val)
 
     def __hash__(self):
-        return hash(tuple(sorted(self.val)))
+        return hash(self.val)
 
     def __len__(self):
         return len(self.val)
 
     def __getitem__(self, key):
-        return tuple(sorted(self.val))[key]
+        return self.val[key]
 
     def __index__(self):
-        return tuple(sorted(self.val))
+        return self.val
 
 class Candidate(object):
     def __init__(self, key=None, val=0.0):
@@ -83,7 +82,6 @@ class Candidate(object):
 
     def append(self, key):
         self.method_interface(APPEND, key)
-        # self.candidates[str(itemset.set)] = itemset.supp
 
     def get_itemset(self, key):
         try:
@@ -121,16 +119,21 @@ class Candidate(object):
 
         except KeyMustBeSetError as e:
             print e.message
+            sys.exit(1)
 
         except CantAppendError as e:
             print e.message
+            sys.exit(1)
 
         except KeyError as e:
             if method_name == GET:
                 self.candidates[key] = val
                 return val
+
             else:
                 print e
+                sys.exit(1)
+
 
 if __name__ == "__main__":
     from Candidate import ItemSet, Candidate
