@@ -66,7 +66,8 @@ class AssocRulesExtractor(object):
                     candidates_k.remove(candidate)
 
         return candidates_k
-
+    
+    # read paper subset section to confirm the functionality
     def subset(self, candidates, transactions):
         Ct_itemset = Candidate()
         for trans in transactions:
