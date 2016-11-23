@@ -67,14 +67,14 @@ class AssocRulesExtractor(object):
         return candidate_k
 
     def subset(self, candidate, transactions):
-        Ct_itemset = Candidate()
+        Ct_candidate = Candidate()
         for trans in transactions:
             for itemset in candidate:
                 if itemset.is_subset_of(trans):
-                    Ct_itemset[itemset] = (
-                        Ct_itemset.get(itemset) + 1.0 / self.total_trans
+                    Ct_candidate[itemset] = (
+                        Ct_candidate.get(itemset) + 1.0 / self.total_trans
                     )
-        return Ct_itemset
+        return Ct_candidate
 
     def apriori(self):
         '''
@@ -84,11 +84,11 @@ class AssocRulesExtractor(object):
         idx = 0
         while Lk_itemset and idx < self.L1_len:
             candidate_k = self.apriori_gen(Lk_itemset)
-            Ct_itemset = self.subset(candidate_k, self.transactions)
-            for ct_candidate in Ct_itemset:
-                if Ct_itemset.get(ct_candidate) < self.min_supp:
-                    del Ct_itemset[ct_candidate]
-            Lk_itemset = Ct_itemset
+            Ct_candidate = self.subset(candidate_k, self.transactions)
+            for ct_candidate in Ct_candidate:
+                if Ct_candidate.get(ct_candidate) < self.min_supp:
+                    del Ct_candidate[ct_candidate]
+            Lk_itemset = Ct_candidate
             print "Lk_itemset:", Lk_itemset
             idx += 1
             
