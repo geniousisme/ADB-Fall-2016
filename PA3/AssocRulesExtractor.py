@@ -70,8 +70,6 @@ class AssocRulesExtractor(object):
                 if subset not in Lk_1_itemset:
                     del candidate_k[itemset]
 
-        return candidate_k
-
     def subset(self, candidate, transactions):
         Ct_candidate = Candidate()
         for trans in transactions:
@@ -87,7 +85,6 @@ class AssocRulesExtractor(object):
         Apriori Algo - p3 - Fig.1
         '''
         Lk_itemset = self.get_L1_itemset()
-        idx = 0
         while Lk_itemset:
             candidate_k = self.apriori_gen(Lk_itemset)
             Ct_candidate = self.subset(candidate_k, self.transactions)
