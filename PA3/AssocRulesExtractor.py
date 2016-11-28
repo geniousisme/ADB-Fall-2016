@@ -17,6 +17,14 @@ class AssocRulesExtractor(object):
         self.total_trans = 0
         self.transactions = []
         self.L1_len = 0
+        self.res_candidate = Candidate()
+
+    def get_candidate_with_min_supp(self, src_candidate):
+        for itemset in src_candidate:
+            if src_candidate.get(itemset) < self.min_supp:
+                del src_candidate[itemset]
+        self.res_candidate.extend(src_candidate)
+        return src_candidate
 
     def get_L1_itemset(self):
         L1_itemset = Candidate()
@@ -30,9 +38,7 @@ class AssocRulesExtractor(object):
                 L1_itemset[item] = (
                     L1_itemset.get(item) + 1.0 / self.total_trans
                 )
-        for itemset in L1_itemset:
-            if L1_itemset.get(itemset) < self.min_supp:
-                del L1_itemset[itemset]
+        L1_itemset = self.get_candidate_with_min_supp(L1_itemset)
         self.L1_len = len(L1_itemset)
         return L1_itemset
 
@@ -82,13 +88,9 @@ class AssocRulesExtractor(object):
         '''
         Lk_itemset = self.get_L1_itemset()
         idx = 0
-        while Lk_itemset and idx < self.L1_len:
+        while Lk_itemset:
             candidate_k = self.apriori_gen(Lk_itemset)
             Ct_candidate = self.subset(candidate_k, self.transactions)
-            for ct_candidate in Ct_candidate:
-                if Ct_candidate.get(ct_candidate) < self.min_supp:
-                    del Ct_candidate[ct_candidate]
-            Lk_itemset = Ct_candidate
-            print "Lk_itemset:", Lk_itemset
-            idx += 1
+            Lk_itemset = self.get_candidate_with_min_supp(Ct_candidate)
+        print "Res Candidate:", self.res_candidate
             

@@ -9,49 +9,52 @@ GETITEM = "getitem"
 DELITEM = "delitem"
 GET = "get"
 APPEND = "append"
+EXTEND = "extend"
 
 class ItemSet(object):
-    def __init__(self, val=set()):
-        if not isinstance(val, set):
-            if not isinstance(val, list):
-                val = [val]
-            val = set(val)
-        val = tuple(sorted(val))
-        self.val = val
+    def __init__(self, itm_set=tuple(), supp=0.0, conf=0.0):
+        if not isinstance(itm_set, set):
+            if not isinstance(itm_set, list):
+                itm_set = [itm_set]
+            itm_set = set(itm_set)
+        itm_set = tuple(sorted(itm_set))
+        self.itm_set = itm_set
+        self.supp = supp
+        self.conf = conf
 
     def __eq__(self, other):
         if isinstance(other, tuple):
-            return self.val == other
+            return self.itm_set == other
 
         if isinstance(other, set):
-            return self.val == tuple(other)
+            return self.itm_set == tuple(other)
 
         if isinstance(other, list):
-            return self.val == tuple(other)
+            return self.itm_set == tuple(other)
 
-        return self.val == other.val
+        return self.itm_set == other.itm_set
 
     def __repr__(self):
-        return "<ItemSet: " + str(self.val) + ">"
+        return "<ItemSet: " + str(self.itm_set) + ">"
 
     def __str__(self):
-        return  "itemSet: " + str(self.val)
+        return  "itemSet: " + str(self.itm_set)
 
     def __hash__(self):
-        return hash(self.val)
+        return hash(self.itm_set)
 
     def __len__(self):
-        return len(self.val)
+        return len(self.itm_set)
 
     def __getitem__(self, key):
-        return self.val[key]
+        return self.itm_set[key]
 
     def __index__(self):
-        return self.val
+        return self.itm_set
 
     def is_subset_of(self, target):
         if not isinstance(target, set):
-            target = set(target)
+            target = itm_set(target)
         return set(self).issubset(target)
 
 class Candidate(object):
@@ -88,20 +91,12 @@ class Candidate(object):
     def append(self, key):
         self.method_interface(APPEND, key)
 
-    def get_itemset(self, key):
-        try:
-            if not isinstance(key, set):
-                raise KeyMustBeSetError
-            supp = self.candidates[str(key)]
-            item_set = ItemSet(key, supp)
-            return item_set
-
-        except KeyMustBeSetError as e:
-            print e.message
+    def extend(self, key):
+        self.method_interface(EXTEND, key)
 
     def method_interface(self, method_name, key, val=0.0):
         try:
-            if not isinstance(key, ItemSet):
+            if not (isinstance(key, ItemSet) or isinstance(key, Candidate)):
                 key = ItemSet(key)
 
             if method_name == SETITEM:
@@ -122,6 +117,13 @@ class Candidate(object):
                 else:
                     raise CantAppendError
 
+            elif method_name == EXTEND:
+                if not isinstance(key, Candidate):
+                    raise CantAppendError
+                candidate = key
+                for itemset in candidate:
+                    self.method_interface(APPEND, itemset, candidate[itemset])
+
         except KeyMustBeSetError as e:
             print e.message
             sys.exit(1)
@@ -136,7 +138,7 @@ class Candidate(object):
                 return val
 
             else:
-                print e
+                print "KeyError:", e
                 sys.exit(1)
 
 
@@ -147,5 +149,5 @@ if __name__ == "__main__":
     ct[it1] = 1
     ct[ItemSet(1)] = 2
     ct[set([1, 2, 3])] = 1
-    print ct.get(set([1,2]))
+    print ct.get(set([1, 2]))
 
