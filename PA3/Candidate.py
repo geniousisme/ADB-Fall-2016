@@ -1,36 +1,61 @@
+import sys
+
 from collections import OrderedDict
+
+from Error import KeyMustBeSetError, CantAppendError
 
 SETITEM = "setitem"
 GETITEM = "getitem"
 DELITEM = "delitem"
 GET = "get"
 APPEND = "append"
-
-
-class KeyMustBeSetError(Exception):
-    def __init__(self):
-        self.message = "The key must be set object!"
-
-class CantAppendError(Exception):
-    def __init__(self):
-        self.message = "The key already exist!"
+EXTEND = "extend"
 
 class ItemSet(object):
-    def __init__(self, set=set(), supp=0.0):
-        self.set = set
+    def __init__(self, itm_set=tuple(), supp=0.0, conf=0.0):
+        if not isinstance(itm_set, set):
+            if not isinstance(itm_set, list):
+                itm_set = [itm_set]
+            itm_set = set(itm_set)
+        itm_set = tuple(sorted(itm_set))
+        self.itm_set = itm_set
         self.supp = supp
+        self.conf = conf
 
     def __eq__(self, other):
-        return self.set == other.set 
+        if isinstance(other, tuple):
+            return self.itm_set == other
+
+        if isinstance(other, set):
+            return self.itm_set == tuple(other)
+
+        if isinstance(other, list):
+            return self.itm_set == tuple(other)
+
+        return self.itm_set == other.itm_set
 
     def __repr__(self):
-        return "<ItemSet: " + str(self.set) + ">"
-
-    def __index__(self):
-        return tuple(self.set)
+        return "<ItemSet: " + str(self.itm_set) + ">"
 
     def __str__(self):
-        return  "itemSet: " + str(self.set) 
+        return  "itemSet: " + str(self.itm_set)
+
+    def __hash__(self):
+        return hash(self.itm_set)
+
+    def __len__(self):
+        return len(self.itm_set)
+
+    def __getitem__(self, key):
+        return self.itm_set[key]
+
+    def __index__(self):
+        return self.itm_set
+
+    def is_subset_of(self, target):
+        if not isinstance(target, set):
+            target = itm_set(target)
+        return set(self).issubset(target)
 
 class Candidate(object):
     def __init__(self, key=None, val=0.0):
@@ -55,7 +80,7 @@ class Candidate(object):
         self.method_interface(SETITEM, key, val)
 
     def __getitem__(self, key):
-        self.method_interface(GETITEM, key)
+        return self.method_interface(GETITEM, key)
 
     def __delitem__(self, key):
         self.method_interface(DELITEM, key)
@@ -65,27 +90,14 @@ class Candidate(object):
 
     def append(self, key):
         self.method_interface(APPEND, key)
-        # self.candidates[str(itemset.set)] = itemset.supp
 
-    def get_itemset(self, key):
-        try:
-            if not isinstance(key, set):
-                raise KeyMustBeSetError
-            supp = self.candidates[str(key)]
-            item_set = ItemSet(key, supp)
-            return item_set
-
-        except KeyMustBeSetError as e:
-            print e.message
+    def extend(self, key):
+        self.method_interface(EXTEND, key)
 
     def method_interface(self, method_name, key, val=0.0):
         try:
-            if not isinstance(key, tuple):
-                if not isinstance(key, set):
-                    if not isinstance(key, list):
-                        key = [key]
-                    key = set(key)
-                key = tuple(sorted(key))
+            if not (isinstance(key, ItemSet) or isinstance(key, Candidate)):
+                key = ItemSet(key)
 
             if method_name == SETITEM:
                 self.candidates[key] = val
@@ -105,23 +117,37 @@ class Candidate(object):
                 else:
                     raise CantAppendError
 
+            elif method_name == EXTEND:
+                if not isinstance(key, Candidate):
+                    raise CantAppendError
+                candidate = key
+                for itemset in candidate:
+                    self.method_interface(APPEND, itemset, candidate[itemset])
+
         except KeyMustBeSetError as e:
             print e.message
+            sys.exit(1)
 
         except CantAppendError as e:
             print e.message
+            sys.exit(1)
 
         except KeyError as e:
             if method_name == GET:
                 self.candidates[key] = val
                 return val
+
             else:
-                print e
+                print "KeyError:", e
+                sys.exit(1)
 
 
 if __name__ == "__main__":
     from Candidate import ItemSet, Candidate
     ct = Candidate()
+    it1 = ItemSet(1)
+    ct[it1] = 1
+    ct[ItemSet(1)] = 2
     ct[set([1, 2, 3])] = 1
-    print ct.get(set([1,2]))
+    print ct.get(set([1, 2]))
 
