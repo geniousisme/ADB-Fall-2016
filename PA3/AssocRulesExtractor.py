@@ -1,7 +1,7 @@
-from collections import defaultdict
+from collections import OrderedDict
 
 from Candidate import Candidate, ItemSet
-from Util import get_transactions, get_subsets
+from Util import get_transactions, get_subsets, get_perms, gen_output
 
 class AssocRulesExtractor(object):
     '''
@@ -17,15 +17,38 @@ class AssocRulesExtractor(object):
         self.total_trans = 0
         self.transactions = []
         self.L1_len = 0
-        self.res_candidate = Candidate()
+        self.supp_candidate = Candidate()
+        self.conf_candidate = OrderedDict()
+        self.output = open('output.txt', 'w')
+
+    def __del__(self):
+        self.output.close()
+        del self.output
 
     def get_candidate_with_min_supp(self, src_candidate):
         for itemset in src_candidate:
             if src_candidate.get(itemset) < self.min_supp:
                 del src_candidate[itemset]
-        self.res_candidate.extend(src_candidate)
+        self.supp_candidate.extend(src_candidate)
         return src_candidate
 
+    def gen_associate_rules_with_min_conf(self, src_candidate):
+        if not src_candidate:
+            return
+        for itemset in src_candidate:
+            assoc_rules = get_perms(itemset)
+            for rule in assoc_rules:
+                lhs = rule[:-1]
+                rhs = rule[-1]
+                conf = (
+                    self.supp_candidate[ItemSet(rule)]
+                    / self.supp_candidate[ItemSet(lhs)]
+                )
+                if conf >= self.min_conf:
+                    self.conf_candidate[tuple([ItemSet(lhs), rhs])] = (
+                        conf, self.supp_candidate[ItemSet(rule)]
+                    )
+        
     def get_L1_itemset(self):
         L1_itemset = Candidate()
         self.transactions = get_transactions(self.filename)
@@ -69,6 +92,7 @@ class AssocRulesExtractor(object):
             for subset in k_1_subsets:
                 if subset not in Lk_1_itemset:
                     del candidate_k[itemset]
+        return candidate_k
 
     def subset(self, candidate, transactions):
         Ct_candidate = Candidate()
@@ -89,5 +113,13 @@ class AssocRulesExtractor(object):
             candidate_k = self.apriori_gen(Lk_itemset)
             Ct_candidate = self.subset(candidate_k, self.transactions)
             Lk_itemset = self.get_candidate_with_min_supp(Ct_candidate)
-        print "Res Candidate:", self.res_candidate
+            self.gen_associate_rules_with_min_conf(Lk_itemset)
+
+        gen_output(
+            self.min_supp, 
+            self.min_conf, 
+            self.supp_candidate, 
+            self.conf_candidate, 
+            self.output
+        )
             

@@ -13,10 +13,11 @@ EXTEND = "extend"
 
 class ItemSet(object):
     def __init__(self, itm_set=tuple(), supp=0.0, conf=0.0):
-        if not isinstance(itm_set, set):
-            if not isinstance(itm_set, list):
-                itm_set = [itm_set]
-            itm_set = set(itm_set)
+        if not isinstance(itm_set, tuple):
+            if not isinstance(itm_set, set):
+                if not isinstance(itm_set, list):
+                    itm_set = [itm_set]
+                itm_set = set(itm_set)
         itm_set = tuple(sorted(itm_set))
         self.itm_set = itm_set
         self.supp = supp
@@ -48,6 +49,9 @@ class ItemSet(object):
 
     def __getitem__(self, key):
         return self.itm_set[key]
+
+    def __iter__(self):
+        return iter(self.itm_set)
 
     def __index__(self):
         return self.itm_set
