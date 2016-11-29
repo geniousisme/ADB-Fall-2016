@@ -16,7 +16,6 @@ class AssocRulesExtractor(object):
         self.min_conf = min_conf
         self.total_trans = 0
         self.transactions = []
-        self.L1_len = 0
         self.supp_candidate = Candidate()
         self.conf_candidate = OrderedDict()
         self.output = open('output.txt', 'w')
@@ -62,7 +61,6 @@ class AssocRulesExtractor(object):
                     L1_itemset.get(item) + 1.0 / self.total_trans
                 )
         L1_itemset = self.get_candidate_with_min_supp(L1_itemset)
-        self.L1_len = len(L1_itemset)
         return L1_itemset
 
     def apriori_gen(self, Lk_1_itemset):
