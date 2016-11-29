@@ -40,7 +40,6 @@ class MainFunc(object):
         self.are = AssocRulesExtractor(file_name, min_supp, min_conf)
         self.are.apriori()
 
-
 if __name__ == "__main__":
     main = MainFunc()
     main.run()
