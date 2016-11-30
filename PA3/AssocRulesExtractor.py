@@ -2,6 +2,7 @@ from collections import OrderedDict
 
 from Candidate import Candidate, ItemSet
 from Util import get_transactions, get_subsets, get_perms, gen_output
+from Util import spinner_animation
 
 class AssocRulesExtractor(object):
     '''
@@ -117,7 +118,8 @@ class AssocRulesExtractor(object):
             Ct_candidate = self.subset(candidate_k, self.transactions)
             Lk_itemset = self.get_candidate_with_min_supp(Ct_candidate)
             self.gen_associate_rules_with_min_conf(Lk_itemset)
-
+            spinner_animation()
+            
         gen_output(
             self.min_supp, 
             self.min_conf, 

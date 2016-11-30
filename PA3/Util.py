@@ -1,6 +1,8 @@
 from __future__ import print_function
 from csv import reader
 from re import sub
+import sys
+import time
 
 from itertools import combinations, permutations
 
@@ -63,3 +65,16 @@ def gen_output(min_supp, min_conf, supp_candidate, conf_candidate, output):
             + "%)",
             file=output
         )
+
+def spinning_cursor():
+    while True:
+        for cursor in '|/-\\':
+            yield cursor 
+
+spinner = spinning_cursor()
+
+def spinner_animation():    
+    sys.stdout.write(spinner.next())
+    sys.stdout.flush()
+    time.sleep(0.1)
+    sys.stdout.write('\b')
