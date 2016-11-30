@@ -137,14 +137,12 @@ class Candidate(object):
             sys.exit(1)
 
         except KeyError as e:
-            if method_name == GET:
-                self.candidates[key] = val
-                return val
-
-            else:
-                print "KeyError:", e
+            if method_name != GET:
+                raise KeyError
                 sys.exit(1)
 
+            self.candidates[key] = val
+            return val
 
 if __name__ == "__main__":
     from Candidate import ItemSet, Candidate

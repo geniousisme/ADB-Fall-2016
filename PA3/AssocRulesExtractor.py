@@ -90,9 +90,14 @@ class AssocRulesExtractor(object):
             for subset in k_1_subsets:
                 if subset not in Lk_1_itemset:
                     del candidate_k[itemset]
+                    break
         return candidate_k
 
     def subset(self, candidate, transactions):
+        '''
+        Didn't follow the approach in sec 2.1.2,
+        only use the concept in sec 2.1 Fig.1 line 5 to implement.
+        '''
         Ct_candidate = Candidate()
         for trans in transactions:
             for itemset in candidate:

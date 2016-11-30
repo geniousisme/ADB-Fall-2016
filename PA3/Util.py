@@ -12,7 +12,7 @@ def get_transactions(filename):
             row_result = []
             for item in row:
                 item = replace_non_ascii_with_space(item)
-                item = item.strip('\n').strip('\r')
+                item = item.strip().strip('\n').strip('\r')
                 row_result.append(item)
             result.append(set(row_result))
     return result
