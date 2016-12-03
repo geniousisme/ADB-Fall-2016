@@ -58,7 +58,7 @@ class ItemSet(object):
 
     def is_subset_of(self, target):
         if not isinstance(target, set):
-            target = itm_set(target)
+            target = set(target)
         return set(self).issubset(target)
 
 class Candidate(object):
