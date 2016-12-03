@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from Candidate import Candidate, ItemSet
 from Util import get_transactions, get_subsets, get_perms, gen_output
-from Util import spinner_animation
+from Util import loading_animation
 
 class AssocRulesExtractor(object):
     '''
@@ -12,6 +12,7 @@ class AssocRulesExtractor(object):
     IBM Almaden Research Center
     '''
     def __init__(self, filename, min_supp, min_conf):
+        print "Loading",
         self.filename = filename
         self.min_supp = min_supp
         self.min_conf = min_conf
@@ -24,6 +25,7 @@ class AssocRulesExtractor(object):
     def __del__(self):
         self.output.close()
         del self.output
+        print
 
     def get_candidate_with_min_supp(self, src_candidate):
         for itemset in src_candidate:
@@ -118,7 +120,7 @@ class AssocRulesExtractor(object):
             Ct_candidate = self.subset(candidate_k, self.transactions)
             Lk_itemset = self.get_candidate_with_min_supp(Ct_candidate)
             self.gen_associate_rules_with_min_conf(Lk_itemset)
-            spinner_animation()
+            loading_animation()
             
         gen_output(
             self.min_supp, 

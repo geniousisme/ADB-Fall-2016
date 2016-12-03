@@ -1,8 +1,8 @@
 from __future__ import print_function
 from csv import reader
 from re import sub
-import sys
-import time
+from sys import stdout
+from time import sleep
 
 from itertools import combinations, permutations
 
@@ -16,7 +16,7 @@ def get_transactions(filename):
                 item = replace_non_ascii_with_space(item)
                 item = item.strip().strip('\n').strip('\r')
                 row_result.append(item)
-            result.append(set(row_result))
+            result.append(row_result)
     return result
 
 def replace_non_ascii_with_space(input_doc):
@@ -52,29 +52,19 @@ def gen_output(min_supp, min_conf, supp_candidate, conf_candidate, output):
     for lhs_itemset_rhs in sorted(
         conf_candidate, key=conf_candidate.get, reverse=True
     ):
-        lhs_str = '[' + ', '.join(list(lhs_itemset_rhs[0])) + ']'
-        rhs_str = '[' + str(lhs_itemset_rhs[1]) + '] '
+        lhs_itemset, rhs = lhs_itemset_rhs
+        lhs_str = '[' + ', '.join(list(lhs_itemset)) + ']'
+        rhs_str = '[' + str(rhs) + '] '
         itemset_str = lhs_str + " => " + rhs_str
+        conf, supp = conf_candidate[lhs_itemset_rhs]
         print(
             itemset_str
-            + "(Conf: "
-            + str(round(conf_candidate[lhs_itemset_rhs][0], 2) * 100)
-            + "%, "
-            + "Supp: "
-            + str(round(conf_candidate[lhs_itemset_rhs][1], 2) * 100)
-            + "%)",
+            + "(Conf: " + str(round(conf, 2) * 100) + "%, "
+            + "Supp: " + str(round(supp, 2) * 100) + "%)",
             file=output
         )
 
-def spinning_cursor():
-    while True:
-        for cursor in '|/-\\':
-            yield cursor 
-
-spinner = spinning_cursor()
-
-def spinner_animation():    
-    sys.stdout.write(spinner.next())
-    sys.stdout.flush()
-    time.sleep(0.1)
-    sys.stdout.write('\b')
+def loading_animation():    
+    stdout.write(' .')
+    stdout.flush()
+    sleep(0.1)
