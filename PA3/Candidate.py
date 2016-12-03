@@ -144,12 +144,3 @@ class Candidate(object):
             self.candidates[key] = val
             return val
 
-if __name__ == "__main__":
-    from Candidate import ItemSet, Candidate
-    ct = Candidate()
-    it1 = ItemSet(1)
-    ct[it1] = 1
-    ct[ItemSet(1)] = 2
-    ct[set([1, 2, 3])] = 1
-    print ct.get(set([1, 2]))
-
