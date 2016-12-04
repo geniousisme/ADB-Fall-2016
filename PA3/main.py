@@ -7,9 +7,20 @@ class MainFunc(object):
     def __init__(self):
         self.are = None
 
+    def __del__(self):
+        del self.are
+
     def helper(self):
         print "python main.py <INTEGRATED_DATASET_FILENAME> <min_supp> <min_conf>"
         print "ex. python main.py INTEGRATED-DATASET.csv 0.3 0.5"
+        sys.exit(1)
+
+    def shutdown(self):
+        print "\n\n\n"
+        print "+------------------------------------+"
+        print "|      Leaving Proj3 Program....     |"
+        print "+------------------------------------+"
+        print "Bye ~"
         sys.exit(1)
 
     def arg_parser(self, commands):
@@ -36,9 +47,13 @@ class MainFunc(object):
             return file_name, min_supp, min_conf
 
     def run(self):
-        file_name, min_supp, min_conf = self.arg_parser(sys.argv)
-        self.are = AssocRulesExtractor(file_name, min_supp, min_conf)
-        self.are.apriori()
+        try:
+            file_name, min_supp, min_conf = self.arg_parser(sys.argv)
+            self.are = AssocRulesExtractor(file_name, min_supp, min_conf)
+            self.are.apriori()
+
+        except KeyboardInterrupt:
+            self.shutdown()
 
 if __name__ == "__main__":
     main = MainFunc()
