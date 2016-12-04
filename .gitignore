@@ -3,6 +3,7 @@
 *.swp
 *.pdf
 *.csv
+*.txt
 .DS_Store
 reference/*
 *_copy.py
