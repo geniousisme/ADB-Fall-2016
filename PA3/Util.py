@@ -7,8 +7,8 @@ from time import sleep
 from itertools import combinations, permutations
 
 def get_transactions(filename):
-    with open(filename, 'r') as csvfile:
-        csv_reader = reader(csvfile, delimiter=',')
+    with open(filename, 'rU') as csvfile:
+        csv_reader = reader(csvfile, dialect='excel', delimiter=',')
         result = []
         for row in csv_reader:
             row_result = []

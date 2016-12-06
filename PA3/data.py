@@ -40,6 +40,8 @@ def data_split(filename):
                 csv_writer.writerow(row)
                 is_csv_field = False
             else:
+                if row[count_idx] == '.':
+                    row[count_idx] = '0'
                 count = int(row[count_idx])
                 while count:
                     csv_writer.writerow(row[:count_idx] + row[count_idx + 1:])
@@ -49,17 +51,27 @@ def data_split(filename):
 def test_splitted_data(filename):
     with open(filename, 'r') as csvfile:        
         csv_reader = reader(csvfile, delimiter=',')
-        total_row_num = 5
+        total_row_num = 6
         for row in csv_reader:
             if len(row) != total_row_num:
                 print row
                 break
     print "All rows are valid!"
 
+def data_modify(filename):
+    output = file('modified.csv', 'w')
+    with open(filename, 'rU') as csvfile:        
+        csv_reader = reader(csvfile, dialect='excel', delimiter=',')
+        csv_writer = writer(output, dialect='excel')
+        for row in csv_reader:
+            if "Pulse/Heart Rate" in row:
+                row[row.index("Pulse/Heart Rate")] = "Pulse-Heart Rate"
+            csv_writer.writerow(row)
+    output.close()
+
                 
 if __name__ == "__main__":
     # data_normalize(sys.argv[1])
-    # data_split(sys.argv[1])
-    test_splitted_data(sys.argv[1])
-    # you are a fucking asshole. why do you care their problem! stupid girl?!!! go to hell!    
-    # The guy will be deadddddddddd.
+    data_split(sys.argv[1])
+    # test_splitted_data(sys.argv[1])
+    # data_modify(sys.argv[1])
