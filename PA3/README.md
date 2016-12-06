@@ -1,7 +1,7 @@
-## COMS 6111 - Association Rule Mining
+## COMS 6111 - Project 3 Group 1 - Association Rule Mining
 ### Project 3 Group 1
-Chia-Hao Hsu (ch3141)
-Yu Wang (yw2783)
+- Chia-Hao Hsu (ch3141)
+- Yu Wang (yw2783)
 
 ### NYC Open Data Set
 New York City Leading Causes of Death
